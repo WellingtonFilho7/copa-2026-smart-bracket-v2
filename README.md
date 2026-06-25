@@ -10,7 +10,7 @@ Instale dependências:
 npm install
 ```
 
-Em um terminal, suba o backend mínimo:
+Em um terminal, suba o backend mínimo local:
 
 ```bash
 npm run server
@@ -23,6 +23,12 @@ npm run dev
 ```
 
 O frontend consome `http://localhost:3016/api/worldcup-feed` via proxy do Vite.
+
+## Produção na Vercel
+
+Em produção, o feed é servido por uma Vercel Function em `api/worldcup-feed.ts`.
+
+O arquivo `vercel.json` fixa o preset do projeto como `vite`, evitando que a presença do servidor Express local de desenvolvimento confunda a detecção do framework no deploy.
 
 ## Testes
 

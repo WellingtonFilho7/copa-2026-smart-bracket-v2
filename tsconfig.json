@@ -16,5 +16,5 @@
     "noUnusedParameters": true,
     "types": ["vitest/globals", "node"]
   },
-  "include": ["src", "server", "vite.config.ts"]
+  "include": ["src", "server", "api", "vite.config.ts"]
 }
