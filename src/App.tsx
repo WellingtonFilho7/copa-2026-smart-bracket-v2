@@ -1,8 +1,10 @@
 import { useMemo, useRef, useState } from "react";
+import type { ChangeEvent } from "react";
 
 import { BracketHome } from "./components/BracketHome";
 import { ConflictPanel } from "./components/ConflictPanel";
 import { GroupCards } from "./components/GroupCards";
+import { MatchHub } from "./components/MatchHub";
 import { MatchModal } from "./components/MatchModal";
 import { WorkspaceToolbar } from "./components/WorkspaceToolbar";
 import { fetchFeedMatches } from "./lib/feed/client";
@@ -13,7 +15,7 @@ import {
   computeGroupStandings,
   rankThirdPlaceTeams,
 } from "./lib/tournament/engine";
-import type { GroupMatch } from "./lib/types";
+import type { GroupMatch, KnockoutMatchView } from "./lib/types";
 import {
   acceptFeedValue,
   applyManualScore,
@@ -96,6 +98,25 @@ export default function App() {
 
   const conflictEntries = Object.values(workspace.conflicts).filter((value) => value !== undefined);
   const conflictCountByMatch = Object.fromEntries(conflictEntries.map((conflict) => [conflict.matchId, 1]));
+  const stageMatches = useMemo(() => pickStageMatches(knockoutMatches), [knockoutMatches]);
+  const quickMatches = useMemo(
+    () =>
+      Object.values(stageMatches).map((match) => {
+        const score = resolveMatchScore(workspace, match.id);
+        return {
+          id: match.id,
+          stage: match.stage,
+          kickoff: match.kickoff,
+          homeTeam: match.homeTeam,
+          awayTeam: match.awayTeam,
+          homeScore: score.homeScore,
+          awayScore: score.awayScore,
+          source: score.source,
+          hasConflict: Boolean(workspace.conflicts[match.id]),
+        };
+      }),
+    [stageMatches, workspace],
+  );
 
   function commitWorkspace(nextWorkspace: typeof workspace) {
     setWorkspace(nextWorkspace);
@@ -129,7 +150,7 @@ export default function App() {
     fileInputRef.current?.click();
   }
 
-  async function handleImport(event: React.ChangeEvent<HTMLInputElement>) {
+  async function handleImport(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
     if (!file) {
       return;
@@ -158,15 +179,30 @@ export default function App() {
       />
       <input ref={fileInputRef} hidden type="file" accept="application/json" onChange={(event) => void handleImport(event)} />
 
+      <nav className="section-nav" aria-label="Navegação da página">
+        <a href="#partidas">Partidas</a>
+        <a href="#grupos">Grupos</a>
+        <a href="#chave">Chave</a>
+        <a href="#conflitos">Conflitos</a>
+      </nav>
+
+      <MatchHub matches={quickMatches} conflictCount={conflictEntries.length} onOpenMatch={setSelectedMatchId} />
+
+      <section id="grupos">
       <GroupCards teams={workspace.tournament.teams} />
+      </section>
 
       <section className="workspace-grid">
+        <div id="chave">
         <BracketHome
-          matches={pickStageMatches(knockoutMatches)}
+          matches={stageMatches}
           conflictCountByMatch={conflictCountByMatch}
           onOpenMatch={setSelectedMatchId}
         />
-        <ConflictPanel conflicts={conflictEntries} />
+        </div>
+        <div id="conflitos">
+          <ConflictPanel conflicts={conflictEntries} />
+        </div>
       </section>
 
       <MatchModal
@@ -191,5 +227,11 @@ export default function App() {
 }
 
 function pickStageMatches(matches: Record<string, ReturnType<typeof buildKnockoutMatches>[string]>) {
-  return Object.fromEntries(STAGE_ORDER.map((id) => [id, matches[id]]).filter((entry) => entry[1]));
+  return STAGE_ORDER.reduce<Record<string, KnockoutMatchView>>((accumulator, id) => {
+    const match = matches[id];
+    if (match) {
+      accumulator[id] = match;
+    }
+    return accumulator;
+  }, {});
 }

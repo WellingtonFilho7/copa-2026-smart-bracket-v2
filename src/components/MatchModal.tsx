@@ -103,7 +103,7 @@ export function MatchModal({
           </div>
         ) : null}
 
-        <div className="toolbar-row">
+        <div className="toolbar-row modal-actions">
           <button
             className="primary-button"
             type="button"
