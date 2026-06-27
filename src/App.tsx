@@ -170,24 +170,33 @@ export default function App() {
   return (
     <main className="app-shell">
       <header className="hero">
+        <div className="hero-orbit" aria-hidden="true">
+          <span className="hero-year hero-year-top">20</span>
+          <span className="hero-year hero-year-bottom">26</span>
+        </div>
         <div className="hero-copy">
-          <p className="eyebrow">World Cup 2026 • bracket poster</p>
+          <p className="eyebrow hero-kicker">World Cup 2026 • bracket poster</p>
           <h1>Copa 2026 Smart Bracket</h1>
           <p className="hero-lead">
             Acompanhe o mata-mata, ajuste resultados e revise conflitos em uma página com cara
             de tabela oficial.
           </p>
+          <div className="hero-ribbon-list" aria-label="Características da home">
+            <span>mobile-first</span>
+            <span>editável</span>
+            <span>sem login</span>
+          </div>
         </div>
         <div className="hero-stats" aria-label="Resumo da home">
-          <div className="hero-stat">
+          <div className="hero-stat hero-stat-blue">
             <strong>{filledMatchCount}</strong>
             <span>placares</span>
           </div>
-          <div className="hero-stat">
+          <div className="hero-stat hero-stat-red">
             <strong>{manualMatchCount}</strong>
             <span>manuais</span>
           </div>
-          <div className="hero-stat">
+          <div className="hero-stat hero-stat-lime">
             <strong>{feedMatchCount}</strong>
             <span>da API</span>
           </div>

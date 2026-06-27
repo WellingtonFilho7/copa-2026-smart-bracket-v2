@@ -26,9 +26,9 @@ export function BracketHome({
   return (
     <section className="bracket-shell">
       <div className="bracket-header">
-        <p className="eyebrow">Fase eliminatória</p>
+        <p className="eyebrow bracket-kicker">Fase eliminatória</p>
         <h2>Chaveamento da Copa do Mundo 2026</h2>
-        <p>Tabela principal • horários de Brasília • edição manual ativa</p>
+        <p className="bracket-lead">Tabela principal • horários de Brasília • edição manual ativa</p>
       </div>
 
       <div className="bracket-grid">
@@ -51,12 +51,12 @@ export function BracketHome({
                   onClick={() => onOpenMatch(id)}
                 >
                   <div className="match-card-meta">
-                    <span>{id}</span>
-                    <span>{match.kickoff}</span>
+                    <span className="match-card-id">{id}</span>
+                    <span className="match-card-time">{match.kickoff}</span>
                   </div>
                   <div className="match-card-body">
-                    <span>{match.homeTeam}</span>
-                    <span>{match.awayTeam}</span>
+                    <span className="team-line">{match.homeTeam}</span>
+                    <span className="team-line">{match.awayTeam}</span>
                   </div>
                   {conflictCount > 0 ? (
                     <span className="conflict-badge">{conflictCount} conflito</span>

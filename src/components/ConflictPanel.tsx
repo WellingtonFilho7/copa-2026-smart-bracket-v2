@@ -16,12 +16,12 @@ export function ConflictPanel({ conflicts }: ConflictPanelProps) {
     <aside className="conflict-panel">
       <div className="conflict-panel-header">
         <div>
-          <p className="eyebrow">Revisão editorial</p>
+          <p className="eyebrow conflict-kicker">Revisão editorial</p>
           <h3>Conflitos abertos</h3>
         </div>
         <span className="conflict-count-badge">{conflicts.length}</span>
       </div>
-      <p className="muted-copy">{summaryCopy}</p>
+      <p className="muted-copy conflict-summary">{summaryCopy}</p>
       {conflicts.length === 0 ? (
         <p className="muted-copy">Sem divergências entre API e edição manual.</p>
       ) : (

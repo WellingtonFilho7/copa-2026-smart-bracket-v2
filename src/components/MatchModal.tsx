@@ -50,16 +50,17 @@ export function MatchModal({
       >
         <header className="match-modal-header">
           <div>
-            <p className="eyebrow">{match.stage}</p>
+            <p className="eyebrow modal-kicker">{match.stage}</p>
             <h2>Partida {match.id}</h2>
-            <p>{match.kickoff}</p>
+            <p className="modal-kickoff">{match.kickoff}</p>
           </div>
           <button className="ghost-button" type="button" onClick={onClose}>
             Fechar
           </button>
         </header>
 
-        <div className="modal-score-grid">
+        <div className="modal-score-shell">
+          <div className="modal-score-grid">
           <div className="team-name">{match.homeTeam}</div>
           <label>
             <span className="sr-only">Placar casa</span>
@@ -83,8 +84,9 @@ export function MatchModal({
           </label>
           <div className="team-name team-away">{match.awayTeam}</div>
         </div>
+        </div>
 
-        <div className="source-line">Fonte atual: {sourceLabel}</div>
+        <div className="source-line modal-source">Fonte atual: {sourceLabel}</div>
 
         {conflict ? (
           <div className="conflict-callout">
