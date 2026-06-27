@@ -178,10 +178,19 @@ export default function App() {
             de tabela oficial.
           </p>
         </div>
-        <div className="hero-ribbon" aria-label="Resumo da home">
-          <span>{filledMatchCount} placares</span>
-          <span>{manualMatchCount} manuais</span>
-          <span>{feedMatchCount} da API</span>
+        <div className="hero-stats" aria-label="Resumo da home">
+          <div className="hero-stat">
+            <strong>{filledMatchCount}</strong>
+            <span>placares</span>
+          </div>
+          <div className="hero-stat">
+            <strong>{manualMatchCount}</strong>
+            <span>manuais</span>
+          </div>
+          <div className="hero-stat">
+            <strong>{feedMatchCount}</strong>
+            <span>da API</span>
+          </div>
         </div>
       </header>
 
