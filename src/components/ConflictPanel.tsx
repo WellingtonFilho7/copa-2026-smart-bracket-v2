@@ -23,7 +23,12 @@ export function ConflictPanel({ conflicts }: ConflictPanelProps) {
       </div>
       <p className="muted-copy conflict-summary">{summaryCopy}</p>
       {conflicts.length === 0 ? (
-        <p className="muted-copy">Sem divergências entre API e edição manual.</p>
+        <div className="conflict-empty-state">
+          <p className="muted-copy">Sem divergências entre API e edição manual.</p>
+          <a className="inline-link" href="#partidas">
+            Revisar partidas
+          </a>
+        </div>
       ) : (
         <ul className="conflict-list">
           {conflicts.map((conflict) => (

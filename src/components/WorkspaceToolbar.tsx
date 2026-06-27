@@ -15,7 +15,10 @@ export function WorkspaceToolbar({
     <div className="toolbar">
       <div className="toolbar-copy">
         <p className="eyebrow">Controle do workspace</p>
-        <p className="toolbar-lead">Atualize o feed, exporte o estado e retome de onde parou.</p>
+        <p className="toolbar-lead">
+          Busque o feed quando quiser, salve um snapshot em JSON e compartilhe a mesma base entre
+          amigos.
+        </p>
         <p className="toolbar-sync" aria-label="Última sincronização">
           <span className="toolbar-sync-dot" aria-hidden="true" />
           Última sync: {lastSyncLabel}

@@ -118,12 +118,14 @@ export function MatchModal({
           >
             Salvar placar
           </button>
+        </div>
+        <div className="modal-utility-row">
           <button
             className="ghost-button"
             type="button"
             onClick={() => setShowStructure((value) => !value)}
           >
-            Editar estrutura
+            {showStructure ? "Ocultar estrutura" : "Ver estrutura da chave"}
           </button>
         </div>
 

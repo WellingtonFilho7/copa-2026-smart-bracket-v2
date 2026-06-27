@@ -1,7 +1,7 @@
-import type { KnockoutMatchView } from "../lib/types";
+import type { KnockoutStageCard } from "../App";
 
 type BracketHomeProps = {
-  matches: Record<string, KnockoutMatchView>;
+  matches: Record<string, KnockoutStageCard>;
   conflictCountByMatch: Record<string, number>;
   onOpenMatch: (matchId: string) => void;
 };
@@ -23,12 +23,20 @@ export function BracketHome({
   conflictCountByMatch,
   onOpenMatch,
 }: BracketHomeProps) {
+  const sourceCopy: Record<KnockoutStageCard["source"], string> = {
+    manual: "manual",
+    feed: "api",
+    base: "base",
+  };
+
   return (
     <section className="bracket-shell">
       <div className="bracket-header">
         <p className="eyebrow bracket-kicker">Fase eliminatória</p>
         <h2>Chaveamento da Copa do Mundo 2026</h2>
-        <p className="bracket-lead">Tabela principal • horários de Brasília • edição manual ativa</p>
+        <p className="bracket-lead">
+          Tabela principal • horários de Brasília • placares visíveis antes de abrir o jogo
+        </p>
       </div>
 
       <div className="bracket-grid">
@@ -58,9 +66,19 @@ export function BracketHome({
                     <span className="team-line">{match.homeTeam}</span>
                     <span className="team-line">{match.awayTeam}</span>
                   </div>
-                  {conflictCount > 0 ? (
-                    <span className="conflict-badge">{conflictCount} conflito</span>
-                  ) : null}
+                  <div className="match-card-scoreline" aria-label={`Placar atual ${id}`}>
+                    <strong className="match-card-score-value">{match.homeScore ?? "-"}</strong>
+                    <span>x</span>
+                    <strong className="match-card-score-value">{match.awayScore ?? "-"}</strong>
+                  </div>
+                  <div className="match-card-foot">
+                    <span className={`match-card-source match-card-source-${match.source}`}>
+                      {sourceCopy[match.source]}
+                    </span>
+                    {conflictCount > 0 ? (
+                      <span className="conflict-badge">{conflictCount} conflito</span>
+                    ) : null}
+                  </div>
                 </button>
               );
             })}

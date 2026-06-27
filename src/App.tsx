@@ -99,24 +99,8 @@ export default function App() {
   const conflictEntries = Object.values(workspace.conflicts).filter((value) => value !== undefined);
   const conflictCountByMatch = Object.fromEntries(conflictEntries.map((conflict) => [conflict.matchId, 1]));
   const stageMatches = useMemo(() => pickStageMatches(knockoutMatches), [knockoutMatches]);
-  const quickMatches = useMemo(
-    () =>
-      Object.values(stageMatches).map((match) => {
-        const score = resolveMatchScore(workspace, match.id);
-        return {
-          id: match.id,
-          stage: match.stage,
-          kickoff: match.kickoff,
-          homeTeam: match.homeTeam,
-          awayTeam: match.awayTeam,
-          homeScore: score.homeScore,
-          awayScore: score.awayScore,
-          source: score.source,
-          hasConflict: Boolean(workspace.conflicts[match.id]),
-        };
-      }),
-    [stageMatches, workspace],
-  );
+  const stageCards = useMemo(() => buildStageCards(stageMatches, workspace), [stageMatches, workspace]);
+  const quickMatches = useMemo(() => Object.values(stageCards), [stageCards]);
   const filledMatchCount = quickMatches.filter(
     (match) => match.homeScore !== null || match.awayScore !== null,
   ).length;
@@ -175,15 +159,15 @@ export default function App() {
           <span className="hero-year hero-year-bottom">26</span>
         </div>
         <div className="hero-copy">
-          <p className="eyebrow hero-kicker">World Cup 2026 • bracket poster</p>
+          <p className="eyebrow hero-kicker">Poster interativo • Copa 2026</p>
           <h1>Copa 2026 Smart Bracket</h1>
           <p className="hero-lead">
-            Acompanhe o mata-mata, ajuste resultados e revise conflitos em uma página com cara
-            de tabela oficial.
+            Acompanhe a chave, edite placares manualmente e compartilhe o mesmo estado com seus
+            amigos sem login nem complicação.
           </p>
           <div className="hero-ribbon-list" aria-label="Características da home">
-            <span>mobile-first</span>
-            <span>editável</span>
+            <span>editar placares</span>
+            <span>importar e exportar</span>
             <span>sem login</span>
           </div>
         </div>
@@ -232,11 +216,11 @@ export default function App() {
 
       <section className="workspace-grid">
         <div id="chave">
-        <BracketHome
-          matches={stageMatches}
-          conflictCountByMatch={conflictCountByMatch}
-          onOpenMatch={setSelectedMatchId}
-        />
+          <BracketHome
+            matches={stageCards}
+            conflictCountByMatch={conflictCountByMatch}
+            onOpenMatch={setSelectedMatchId}
+          />
         </div>
         <div id="conflitos">
           <ConflictPanel conflicts={conflictEntries} />
@@ -273,3 +257,29 @@ function pickStageMatches(matches: Record<string, ReturnType<typeof buildKnockou
     return accumulator;
   }, {});
 }
+
+function buildStageCards(
+  matches: Record<string, KnockoutMatchView>,
+  workspace: ReturnType<typeof createInitialWorkspace>,
+) {
+  return Object.values(matches).reduce<Record<string, KnockoutStageCard>>((accumulator, match) => {
+    const score = resolveMatchScore(workspace, match.id);
+
+    accumulator[match.id] = {
+      ...match,
+      homeScore: score.homeScore,
+      awayScore: score.awayScore,
+      source: score.source,
+      hasConflict: Boolean(workspace.conflicts[match.id]),
+    };
+
+    return accumulator;
+  }, {});
+}
+
+export type KnockoutStageCard = KnockoutMatchView & {
+  homeScore: number | null;
+  awayScore: number | null;
+  source: "manual" | "feed" | "base";
+  hasConflict: boolean;
+};

@@ -29,7 +29,8 @@ function GroupCard({ group, teams }: { group: string; teams: TeamDefinition[] })
     <section className={`group-card group-${group.toLowerCase()}`}>
       <header className="group-card-header">
         <p className="eyebrow">Grupo {group}</p>
-        <h3>{teams.length} seleções</h3>
+        <h3>Grupo {group}</h3>
+        <span className="group-card-count">{teams.length} seleções</span>
       </header>
       <ul className="group-team-list">
         {teams.map((team) => (

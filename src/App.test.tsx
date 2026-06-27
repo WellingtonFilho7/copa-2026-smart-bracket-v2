@@ -9,7 +9,7 @@ describe("App shell", () => {
     expect(
       screen.getByRole("heading", { name: /copa 2026 smart bracket/i }),
     ).toBeInTheDocument();
-    expect(screen.getByText(/acompanhe o mata-mata/i)).toBeInTheDocument();
+    expect(screen.getByText(/acompanhe a chave/i)).toBeInTheDocument();
     const summary = screen.getByLabelText(/resumo da home/i);
     expect(within(summary).getByText(/placares/i)).toBeInTheDocument();
     expect(within(summary).getByText(/manuais/i)).toBeInTheDocument();
