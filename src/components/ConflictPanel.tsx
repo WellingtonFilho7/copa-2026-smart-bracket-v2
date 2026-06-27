@@ -9,8 +9,8 @@ export function ConflictPanel({ conflicts }: ConflictPanelProps) {
     <aside className="conflict-panel">
       <div className="conflict-panel-header">
         <div>
-          <p className="eyebrow">Revisão</p>
-          <h3>Conflitos</h3>
+          <p className="eyebrow">Revisão editorial</p>
+          <h3>Conflitos abertos</h3>
         </div>
         <span className="conflict-count-badge">{conflicts.length}</span>
       </div>

@@ -11,6 +11,7 @@
   --accent-2: #8f2d1f;
   --ok: #1e6d43;
   --warn: #a45708;
+  --paper-alert: #fff1df;
   --paper-strong: #f9f0e2;
   font-family: "Palatino Linotype", "Book Antiqua", Georgia, serif;
   background: radial-gradient(circle at top, #fffdf7 0%, var(--paper) 58%, #e8dece 100%);
@@ -139,11 +140,11 @@ input {
 
 .conflict-panel {
   background: rgba(255, 250, 241, 0.92);
-  border: 1px solid var(--line);
-  border-radius: 20px;
+  border: 1px solid var(--line-strong);
+  border-radius: 12px;
   padding: 18px;
   margin-bottom: 18px;
-  box-shadow: 0 12px 30px rgba(69, 51, 22, 0.08);
+  box-shadow: none;
 }
 
 .toolbar {
@@ -452,8 +453,8 @@ input {
 
 .bracket-shell {
   background: rgba(255, 253, 248, 0.75);
-  border: 1px solid var(--line);
-  border-radius: 28px;
+  border: 1px solid var(--line-strong);
+  border-radius: 12px;
   padding: 24px;
   position: relative;
 }
@@ -475,7 +476,7 @@ input {
   text-transform: uppercase;
   letter-spacing: 0.08em;
   margin: 0 0 8px;
-  color: var(--muted);
+  color: var(--ink);
   text-align: center;
 }
 
@@ -504,7 +505,7 @@ input {
 
 .match-card-meta {
   font-size: 0.72rem;
-  color: var(--muted);
+  color: var(--ink);
   margin-bottom: 8px;
 }
 
@@ -542,10 +543,10 @@ input {
 .match-modal {
   width: min(640px, 100%);
   background: #fffdf8;
-  border-radius: 28px;
-  border: 1px solid var(--line);
+  border-radius: 12px;
+  border: 1px solid var(--line-strong);
   padding: 24px;
-  box-shadow: 0 24px 70px rgba(22, 18, 11, 0.22);
+  box-shadow: none;
 }
 
 .match-modal-header {
@@ -553,6 +554,10 @@ input {
   justify-content: space-between;
   gap: 16px;
   align-items: flex-start;
+}
+
+.match-modal h2 {
+  color: var(--ink);
 }
 
 .eyebrow {
@@ -622,7 +627,7 @@ input {
   padding: 0 12px;
   border-radius: 999px;
   background: #fbe7cc;
-  color: var(--warn);
+  color: var(--ink);
   font-family: "Arial Narrow", "Avenir Next Condensed", "Helvetica Neue Condensed", sans-serif;
   font-size: 1.2rem;
 }
@@ -640,8 +645,11 @@ input {
   gap: 4px;
   padding: 12px;
   border-radius: 16px;
-  background: rgba(255, 255, 255, 0.8);
-  border: 1px solid rgba(164, 87, 8, 0.14);
+  border-left: 4px solid var(--warn);
+  background: var(--paper-alert);
+  border-top: 1px solid rgba(164, 87, 8, 0.14);
+  border-right: 1px solid rgba(164, 87, 8, 0.14);
+  border-bottom: 1px solid rgba(164, 87, 8, 0.14);
 }
 
 .group-a { --group-accent: #4d7d43; }

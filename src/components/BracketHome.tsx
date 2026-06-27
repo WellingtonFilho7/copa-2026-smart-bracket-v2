@@ -26,8 +26,9 @@ export function BracketHome({
   return (
     <section className="bracket-shell">
       <div className="bracket-header">
+        <p className="eyebrow">Fase eliminatória</p>
         <h2>Chaveamento da Copa do Mundo 2026</h2>
-        <p>Fase eliminatória • Horários de Brasília • Workspace editável</p>
+        <p>Tabela principal • horários de Brasília • edição manual ativa</p>
       </div>
 
       <div className="bracket-grid">
