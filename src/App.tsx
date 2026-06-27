@@ -160,10 +160,20 @@ export default function App() {
         </div>
         <div className="hero-copy">
           <p className="eyebrow hero-kicker">Poster interativo • Copa 2026</p>
-          <h1>Copa 2026 Smart Bracket</h1>
+          <div className="hero-title-stack">
+            <span className="hero-stamp">album edition</span>
+            <h1>
+              <span>Copa 2026</span>
+              Smart Bracket
+            </h1>
+          </div>
+          <p className="hero-deck">A chave inteira em uma capa viva, editável e compartilhável.</p>
           <p className="hero-lead">
             Acompanhe a chave, edite placares manualmente e compartilhe o mesmo estado com seus
             amigos sem login nem complicação.
+          </p>
+          <p className="hero-note">
+            Busca automática opcional, override manual preservado e exportação simples em JSON.
           </p>
           <div className="hero-ribbon-list" aria-label="Características da home">
             <span>editar placares</span>
@@ -208,8 +218,11 @@ export default function App() {
 
       <section className="section-block" id="grupos">
         <div className="section-heading">
-          <p className="eyebrow">Mapa do torneio</p>
-          <h2>Grupos classificados</h2>
+          <div>
+            <p className="eyebrow">Mapa do torneio</p>
+            <h2>Grupos classificados</h2>
+          </div>
+          <p className="section-note">Doze blocos cromáticos alimentando a árvore final.</p>
         </div>
         <GroupCards teams={workspace.tournament.teams} />
       </section>

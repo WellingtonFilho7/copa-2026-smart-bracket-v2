@@ -26,7 +26,7 @@ export function GroupCards({ teams }: GroupCardsProps) {
 
 function GroupCard({ group, teams }: { group: string; teams: TeamDefinition[] }) {
   return (
-    <section className={`group-card group-${group.toLowerCase()}`}>
+    <section className={`group-card group-${group.toLowerCase()}`} data-group={group}>
       <header className="group-card-header">
         <p className="eyebrow">Grupo {group}</p>
         <h3>Grupo {group}</h3>

@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Anton&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,700;9..144,800&display=swap");
+
 :root {
   color-scheme: light;
   --paper: #f7f2e8;
@@ -21,7 +23,7 @@
   --album-plum: #8f86d8;
   --ok: #12925d;
   --warn: #d34c14;
-  font-family: "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  font-family: "Fraunces", "Palatino Linotype", "Book Antiqua", Georgia, serif;
   background: var(--paper);
   color: var(--ink);
 }
@@ -38,6 +40,15 @@ body {
     radial-gradient(circle at 76% 22%, rgba(223, 25, 18, 0.18) 0, rgba(223, 25, 18, 0.18) 2px, transparent 3px),
     radial-gradient(circle at 32% 86%, rgba(197, 234, 58, 0.22) 0, rgba(197, 234, 58, 0.22) 2px, transparent 3px),
     linear-gradient(180deg, #fffdf8 0%, #f8f3e8 100%);
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 12px;
+  border: 1.5px solid rgba(36, 56, 168, 0.2);
+  border-radius: 28px;
+  pointer-events: none;
 }
 
 h1,
@@ -58,7 +69,7 @@ input {
 }
 
 .app-shell {
-  padding: 24px;
+  padding: 28px 24px 32px;
   max-width: 1640px;
   margin: 0 auto;
 }
@@ -83,6 +94,8 @@ input {
   padding: 9px 13px;
   font-size: 0.84rem;
   font-weight: 700;
+  font-family: "Anton", "Arial Narrow", sans-serif;
+  text-transform: uppercase;
   box-shadow: 0 8px 0 rgba(17, 19, 25, 0.08);
 }
 
@@ -107,7 +120,7 @@ input {
 
 .hero h1,
 .bracket-header h2 {
-  font-family: "Arial Narrow", "Avenir Next Condensed", "Helvetica Neue Condensed", sans-serif;
+  font-family: "Anton", "Arial Narrow", "Avenir Next Condensed", "Helvetica Neue Condensed", sans-serif;
   text-transform: uppercase;
   margin: 0;
 }
@@ -142,7 +155,7 @@ input {
   position: relative;
   z-index: 1;
   display: grid;
-  gap: 10px;
+  gap: 12px;
   align-content: start;
 }
 
@@ -150,13 +163,60 @@ input {
   color: #fff;
 }
 
+.hero-title-stack {
+  display: grid;
+  gap: 10px;
+}
+
+.hero-stamp {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: rgba(17, 19, 25, 0.86);
+  color: #fff;
+  font-family: "Anton", "Arial Narrow", sans-serif;
+  font-size: 0.84rem;
+  text-transform: uppercase;
+}
+
+.hero h1 {
+  display: grid;
+  gap: 4px;
+  max-width: 9ch;
+  font-size: clamp(3.9rem, 11vw, 7.8rem);
+  line-height: 0.9;
+}
+
+.hero h1 span {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.hero-deck {
+  margin: 0;
+  max-width: 30rem;
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 1.05rem;
+  font-style: italic;
+}
+
 .hero-lead {
   margin: 0;
-  max-width: 38rem;
+  max-width: 36rem;
   color: #fff;
-  font-size: 1.04rem;
-  line-height: 1.6;
+  font-size: 1.08rem;
+  line-height: 1.58;
   max-width: 34rem;
+}
+
+.hero-note {
+  margin: 0;
+  max-width: 33rem;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 0.88rem;
+  line-height: 1.5;
 }
 
 .hero-ribbon-list {
@@ -183,9 +243,9 @@ input {
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: 1fr;
   gap: 12px;
-  align-content: end;
+  align-content: center;
 }
 
 .hero-stat {
@@ -200,8 +260,16 @@ input {
   box-shadow: 0 10px 0 rgba(17, 19, 25, 0.09);
 }
 
+.hero-stat:nth-child(2) {
+  margin-left: 18px;
+}
+
+.hero-stat:nth-child(3) {
+  margin-left: 36px;
+}
+
 .hero-stat strong {
-  font-family: "Arial Narrow", "Avenir Next Condensed", "Helvetica Neue Condensed", sans-serif;
+  font-family: "Anton", "Arial Narrow", "Avenir Next Condensed", "Helvetica Neue Condensed", sans-serif;
   font-size: 2.45rem;
   line-height: 1;
   font-variant-numeric: tabular-nums;
@@ -263,6 +331,22 @@ input {
   padding: 18px;
   margin-bottom: 18px;
   box-shadow: 0 12px 0 rgba(17, 19, 25, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+.toolbar::before,
+.match-hub::before,
+.bracket-shell::before,
+.conflict-panel::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 126px;
+  height: 10px;
+  border-bottom-right-radius: 18px;
+  background: var(--album-red);
 }
 
 .hero-ribbon,
@@ -352,13 +436,28 @@ input {
   gap: 16px;
   align-items: end;
   margin-bottom: 14px;
+  padding-top: 10px;
+  border-top: 2px solid rgba(36, 56, 168, 0.18);
 }
 
 .section-heading h2,
 .conflict-panel h3 {
   margin: 0;
-  font-family: "Arial Narrow", "Avenir Next Condensed", "Helvetica Neue Condensed", sans-serif;
+  font-family: "Anton", "Arial Narrow", "Avenir Next Condensed", "Helvetica Neue Condensed", sans-serif;
   text-transform: uppercase;
+}
+
+.section-heading h2 {
+  font-size: clamp(1.8rem, 4vw, 2.7rem);
+}
+
+.section-note {
+  margin: 0;
+  max-width: 19rem;
+  text-align: right;
+  color: var(--muted);
+  font-size: 0.92rem;
+  font-style: italic;
 }
 
 .section-nav a:nth-child(4n + 1) {
@@ -408,6 +507,13 @@ input {
   color: var(--ink);
 }
 
+.match-hub-note {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+  font-style: italic;
+}
+
 .match-hub .muted-copy,
 .match-hub .eyebrow {
   color: var(--muted);
@@ -430,8 +536,9 @@ input {
 
 .match-metric strong {
   display: block;
-  font-size: 1.3rem;
-  line-height: 1.1;
+  font-family: "Anton", "Arial Narrow", sans-serif;
+  font-size: 1.55rem;
+  line-height: 1;
   font-variant-numeric: tabular-nums;
 }
 
@@ -461,6 +568,8 @@ input {
   display: grid;
   gap: 8px;
   box-shadow: 0 12px 0 rgba(17, 19, 25, 0.08);
+  position: relative;
+  overflow: hidden;
 }
 
 .match-quick-card:nth-child(4n + 1) {
@@ -481,16 +590,19 @@ input {
 
 .match-quick-card h3 {
   margin: 0;
-  font-size: 1.02rem;
+  font-family: "Anton", "Arial Narrow", sans-serif;
+  font-size: 1.35rem;
+  text-transform: uppercase;
   color: var(--ink);
-  line-height: 1.25;
+  line-height: 1.05;
+  max-width: 11ch;
 }
 
 .match-quick-score {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-family: "Arial Narrow", "Avenir Next Condensed", "Helvetica Neue Condensed", sans-serif;
+  font-family: "Anton", "Arial Narrow", "Avenir Next Condensed", "Helvetica Neue Condensed", sans-serif;
   font-size: clamp(2rem, 6vw, 3rem);
   font-weight: 700;
   line-height: 1;
@@ -557,9 +669,23 @@ input {
 
 .group-card {
   --group-accent: var(--accent);
+  position: relative;
+  overflow: hidden;
   border-radius: 28px;
   padding: 16px;
   box-shadow: 0 12px 0 rgba(17, 19, 25, 0.08);
+}
+
+.group-card::after {
+  content: attr(data-group);
+  position: absolute;
+  right: 12px;
+  bottom: -8px;
+  font-family: "Anton", "Arial Narrow", sans-serif;
+  font-size: 5rem;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.18);
+  pointer-events: none;
 }
 
 .group-card-header {
@@ -584,7 +710,9 @@ input {
 .group-card-header h3 {
   margin: 0;
   text-transform: uppercase;
-  font-size: 0.98rem;
+  font-family: "Anton", "Arial Narrow", sans-serif;
+  font-size: 1.45rem;
+  line-height: 1;
   color: #fff;
 }
 
@@ -665,6 +793,7 @@ input {
   padding: 8px 10px;
   border-radius: 999px;
   background: var(--album-blue);
+  font-family: "Anton", "Arial Narrow", sans-serif;
 }
 
 .match-card {
@@ -708,6 +837,7 @@ input {
   border-radius: 999px;
   background: var(--album-red);
   color: #fff;
+  font-family: "Anton", "Arial Narrow", sans-serif;
   font-weight: 700;
 }
 
@@ -736,7 +866,7 @@ input {
   border-radius: 999px;
   background: rgba(48, 76, 207, 0.08);
   color: var(--ink);
-  font-family: "Arial Narrow", "Avenir Next Condensed", "Helvetica Neue Condensed", sans-serif;
+  font-family: "Anton", "Arial Narrow", "Avenir Next Condensed", "Helvetica Neue Condensed", sans-serif;
   font-size: 1.15rem;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
@@ -828,6 +958,9 @@ input {
 
 .match-modal h2 {
   color: var(--ink);
+  font-family: "Anton", "Arial Narrow", sans-serif;
+  font-size: clamp(2rem, 5vw, 3rem);
+  line-height: 0.95;
 }
 
 .modal-kicker {
@@ -954,8 +1087,8 @@ input {
   border-radius: 999px;
   background: var(--album-red);
   color: #fff;
-  font-family: "Arial Narrow", "Avenir Next Condensed", "Helvetica Neue Condensed", sans-serif;
-  font-size: 1.2rem;
+  font-family: "Anton", "Arial Narrow", "Avenir Next Condensed", "Helvetica Neue Condensed", sans-serif;
+  font-size: 1.4rem;
   font-variant-numeric: tabular-nums;
 }
 
@@ -1053,6 +1186,15 @@ input {
     grid-template-columns: 1fr;
   }
 
+  .hero-stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .hero-stat:nth-child(2),
+  .hero-stat:nth-child(3) {
+    margin-left: 0;
+  }
+
   .match-hub-strip {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -1069,6 +1211,11 @@ input {
 @media (max-width: 900px) {
   .app-shell {
     padding: 16px;
+  }
+
+  body::before {
+    inset: 8px;
+    border-radius: 20px;
   }
 
   .section-nav {
@@ -1100,6 +1247,11 @@ input {
 
   .match-hub-header {
     flex-direction: column;
+  }
+
+  .section-note {
+    max-width: none;
+    text-align: left;
   }
 
   .match-hub-metrics {
@@ -1162,6 +1314,10 @@ input {
     border-radius: 26px;
   }
 
+  .hero h1 {
+    font-size: clamp(3rem, 20vw, 5.2rem);
+  }
+
   .hero-year {
     font-size: clamp(4.2rem, 24vw, 8rem);
   }
@@ -1191,6 +1347,11 @@ input {
 
   .hero-stat strong {
     font-size: 1.65rem;
+  }
+
+  .hero-stat:nth-child(2),
+  .hero-stat:nth-child(3) {
+    margin-left: 0;
   }
 
   .toolbar-row {

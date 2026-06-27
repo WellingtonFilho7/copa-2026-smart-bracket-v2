@@ -31,11 +31,12 @@ export function MatchHub({ matches, conflictCount, onOpenMatch }: MatchHubProps)
       <div className="match-hub-header">
         <div>
           <p className="eyebrow">Fluxo rápido</p>
-          <h2>Partidas rápidas</h2>
+          <h2>Partidas em destaque</h2>
           <p className="muted-copy">
             No celular, comece por aqui: abra um jogo, ajuste placar e volte para a chave
             completa quando precisar do panorama.
           </p>
+          <p className="match-hub-note">Entrada curta para quem quer editar antes de explorar a árvore toda.</p>
         </div>
         <div className="match-hub-metrics" aria-label="Resumo do workspace">
           <div className="match-metric">
