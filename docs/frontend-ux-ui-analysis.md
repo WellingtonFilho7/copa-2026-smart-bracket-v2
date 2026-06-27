@@ -36,13 +36,13 @@ ilegíveis) e H4 (feedback de sync). Os dois primeiros são correções pequenas
 
 ## 2. Evidência visual
 
-| Tela | Arquivo |
-|---|---|
-| Desktop — dobra inicial (hero) | `assets/ux-review/desktop-fold.png` |
-| Desktop — página completa | `assets/ux-review/desktop-full.png` |
-| Desktop — modal de partida | `assets/ux-review/desktop-modal.png` |
-| Mobile — dobra inicial | `assets/ux-review/mobile-fold.png` |
-| Mobile — página completa (mostra o overflow) | `assets/ux-review/mobile-full.png` |
+| Tela | Antes | Depois |
+|---|---|---|
+| Desktop — dobra inicial (hero) | `assets/ux-review/desktop-fold.png` | `assets/ux-review/desktop-fold-after.png` |
+| Desktop — modal de partida | `assets/ux-review/desktop-modal.png` | `assets/ux-review/desktop-modal-after.png` |
+| Mobile — página completa (overflow) | `assets/ux-review/mobile-full.png` | `assets/ux-review/mobile-full-after.png` |
+| Desktop — página completa | `assets/ux-review/desktop-full.png` | — |
+| Mobile — dobra inicial | `assets/ux-review/mobile-fold.png` | — |
 
 ---
 
@@ -175,20 +175,29 @@ durante a chamada, e mensagem de erro visível. Arquivos: `src/App.tsx`, `src/co
 
 ## 5. Plano de Ação
 
-Recomendação priorizada para a próxima rodada de implementação. **P0/P1 são pequenos e de alto
-retorno** e podem virar uma primeira PR isolada, antes do redesign visual maior (P2).
+Recomendação priorizada. **P0/P1 são pequenos e de alto retorno**. A coluna **Status** reflete o
+que já foi implementado nesta branch (`claude/frontend-ux-ui-analysis-w9igiw`).
 
-| Prioridade | Item | Arquivos | Esforço |
+| Prioridade | Item | Arquivos | Status |
 |---|---|---|---|
-| **P0** | C1 — overflow mobile (`min-width:0` nos filhos do `.workspace-grid`) | `src/styles.css` | baixo |
-| **P0** | H1 — foco visível global (`:focus-visible`) | `src/styles.css` | baixo |
-| **P1** | H2 — inputs de placar legíveis + separador "x" | `src/styles.css`, `src/components/MatchModal.tsx` | médio |
-| **P1** | H4 — estados de loading/erro no sync | `src/App.tsx`, `src/components/WorkspaceToolbar.tsx` | médio |
-| **P2** | H3 — hero conforme spec aprovado | `src/App.tsx`, `src/styles.css` | médio/alto |
-| **P2** | M1/M2 — contraste e ruído dos grupos | `src/components/GroupCards.tsx`, `src/styles.css` | médio |
-| **P3** | M5 — a11y do modal (Esc, focus trap, pílula) | `src/components/MatchModal.tsx`, `src/styles.css` | médio |
-| **P3** | M3/M4 — densidade do hero e nav mobile | `src/App.tsx`, `src/styles.css` | baixo |
-| **P3** | L1–L4 — skip-link, favicon, estado de placar, tokens | `index.html`, `src/styles.css` | baixo |
+| **P0** | C1 — overflow mobile (`min-width:0` nos filhos do `.workspace-grid`) | `src/styles.css` | ✅ feito |
+| **P0** | H1 — foco visível global (`:focus-visible`) | `src/styles.css` | ✅ feito |
+| **P1** | H2 — inputs de placar legíveis + separador "×" | `src/styles.css`, `src/components/MatchModal.tsx` | ✅ feito |
+| **P1** | H4 — estados de loading/erro no sync | `src/App.tsx`, `src/components/WorkspaceToolbar.tsx` | ✅ feito |
+| **P2** | H3 — hero conforme spec aprovado (azul dominante, faixa técnica) | `src/App.tsx`, `src/styles.css` | ✅ feito |
+| **P2** | M2 — reduzir ruído das letras-fantasma dos grupos | `src/styles.css` | ✅ feito |
+| **P2** | M1 — contraste dos group cards claros | `src/styles.css` | ➖ overrides já existentes cobrem grupos claros (sem mudança) |
+| **P3** | M5 — a11y do modal (Esc, foco, fundo mais limpo) | `src/components/MatchModal.tsx`, `src/styles.css` | ✅ feito |
+| **P3** | M3 — densidade do hero no mobile | `src/App.tsx`, `src/styles.css` | ✅ feito (hero compacto) |
+| **P3** | L1 — skip-link | `src/App.tsx`, `src/styles.css` | ✅ feito |
+| **P3** | L2 — favicon + meta description/theme-color | `index.html` | ✅ feito |
+| **P3** | M4 — `section-nav` no mobile | `src/styles.css` | ➖ mantido (impacto baixo) |
+| **P3** | L3 — placar vazio vs zero | — | ➖ já distinto (`0` vs `-`) |
+| **P3** | L4 — consolidação de tokens de cor | `src/styles.css` | ⏭️ adiado (refactor de risco, valor baixo) |
+
+> **Verificação desta rodada:** `npm test` (14/14 ✅) e `npm run build` (✅) passam. Overflow mobile
+> confirmado corrigido ao vivo (`scrollWidth === innerWidth === 390`). Screenshots pós-correção
+> também em `docs/assets/ux-review/`.
 
 ### Como verificar cada correção
 - **C1:** abrir em 390px e checar `scrollWidth === innerWidth`; rolar a página sem barra horizontal.

@@ -71,6 +71,37 @@ input {
   font: inherit;
 }
 
+/* Visible keyboard focus for every interactive element (WCAG 2.4.7). */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+.skip-link {
+  position: absolute;
+  left: 12px;
+  top: -60px;
+  z-index: 50;
+  padding: 10px 16px;
+  border-radius: 0 0 12px 12px;
+  background: var(--ink-strong);
+  color: #fff;
+  font-family: "Anton", "Arial Narrow", sans-serif;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: top 140ms ease;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
+.primary-button:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
 .app-shell {
   padding: 28px 24px 32px;
   max-width: 1640px;
@@ -104,29 +135,31 @@ input {
 
 .hero {
   position: relative;
-  display: grid;
-  grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.85fr);
-  gap: 18px;
-  align-items: stretch;
   margin-bottom: 20px;
   overflow: hidden;
-  padding: 28px;
+  padding: clamp(24px, 5vw, 48px);
   background:
-    radial-gradient(circle at 16% 26%, var(--album-lime) 0, var(--album-lime) 15%, transparent 15.5%),
-    radial-gradient(circle at 85% 18%, var(--album-aqua) 0, var(--album-aqua) 13%, transparent 13.5%),
-    radial-gradient(circle at 82% 82%, var(--album-orange) 0, var(--album-orange) 15%, transparent 15.5%),
-    linear-gradient(135deg, var(--album-blue) 0 37%, var(--album-red) 37% 53%, var(--album-lime) 53% 70%, var(--album-aqua) 70% 100%);
-  border: 4px solid #fff;
-  border-radius: 36px;
-  box-shadow: 0 18px 0 rgba(17, 19, 25, 0.12);
+    linear-gradient(135deg, #16245f 0%, var(--album-blue) 58%, #2a45c9 100%);
+  border: 3px solid var(--ink-strong);
+  border-radius: 22px;
+  box-shadow: 0 14px 0 rgba(17, 19, 25, 0.14);
 }
 
+/* Single thin "signal" stripe — color as wayfinding, not decoration spread around. */
 .hero::before {
   content: "";
   position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(90deg, rgba(10, 12, 17, 0.58) 0 46%, rgba(10, 12, 17, 0.26) 46% 72%, rgba(10, 12, 17, 0.08) 72% 100%);
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 8px;
+  background: linear-gradient(
+    90deg,
+    var(--album-lime) 0 25%,
+    var(--album-orange) 25% 50%,
+    var(--album-red) 50% 75%,
+    var(--album-aqua) 75% 100%
+  );
   pointer-events: none;
 }
 
@@ -137,38 +170,13 @@ input {
   margin: 0;
 }
 
-.hero-orbit {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-
-.hero-year {
-  position: absolute;
-  font-family: "Arial Narrow", "Avenir Next Condensed", "Helvetica Neue Condensed", sans-serif;
-  font-size: clamp(5.5rem, 17vw, 11rem);
-  line-height: 0.86;
-  font-weight: 900;
-  color: #fff;
-  text-shadow: 0 6px 0 rgba(17, 19, 25, 0.08);
-}
-
-.hero-year-top {
-  top: 20px;
-  right: 22px;
-}
-
-.hero-year-bottom {
-  right: 34px;
-  bottom: 24px;
-}
-
 .hero-copy {
   position: relative;
   z-index: 1;
   display: grid;
-  gap: 12px;
+  gap: 16px;
   align-content: start;
+  max-width: 54rem;
 }
 
 .hero-kicker {
@@ -196,14 +204,16 @@ input {
 
 .hero h1 {
   display: grid;
-  gap: 4px;
-  max-width: 9ch;
-  font-size: clamp(3.9rem, 11vw, 7.8rem);
+  gap: 2px;
+  max-width: 14ch;
+  font-size: clamp(2.7rem, 8vw, 5.4rem);
   line-height: 0.9;
+  color: #fff;
 }
 
 .hero h1 span {
-  color: rgba(255, 255, 255, 0.98);
+  display: block;
+  color: var(--album-lime);
 }
 
 .hero-deck {
@@ -251,64 +261,45 @@ input {
   text-transform: uppercase;
 }
 
+/* Métricas como faixa técnica discreta, não mini-cards decorativos. */
 .hero-stats {
   position: relative;
   z-index: 1;
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 12px;
-  align-content: center;
+  display: flex;
+  flex-wrap: wrap;
+  width: fit-content;
+  max-width: 100%;
+  margin-top: 4px;
+  border: 2px solid rgba(255, 255, 255, 0.55);
+  border-radius: 12px;
+  overflow: hidden;
 }
 
 .hero-stat {
-  display: grid;
+  display: flex;
+  align-items: baseline;
   gap: 8px;
-  align-content: start;
-  padding: 16px;
-  min-height: 118px;
-  border-radius: 26px;
-  border: 3px solid rgba(255, 255, 255, 0.96);
-  color: #fff;
-  box-shadow: 0 10px 0 rgba(17, 19, 25, 0.09);
+  padding: 12px 20px;
+  border-right: 2px solid rgba(255, 255, 255, 0.28);
 }
 
-.hero-stat:nth-child(2) {
-  margin-left: 18px;
-}
-
-.hero-stat:nth-child(3) {
-  margin-left: 36px;
+.hero-stat:last-child {
+  border-right: 0;
 }
 
 .hero-stat strong {
   font-family: "Anton", "Arial Narrow", "Avenir Next Condensed", "Helvetica Neue Condensed", sans-serif;
-  font-size: 2.45rem;
+  font-size: 1.9rem;
   line-height: 1;
+  color: #fff;
   font-variant-numeric: tabular-nums;
 }
 
 .hero-stat span {
-  color: #fff;
+  color: rgba(255, 255, 255, 0.82);
   font-size: 0.76rem;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
-}
-
-.hero-stat-blue {
-  background: var(--album-blue);
-}
-
-.hero-stat-red {
-  background: var(--album-red);
-}
-
-.hero-stat-lime {
-  background: var(--album-leaf);
-}
-
-.hero-stat-lime,
-.hero-stat-lime span,
-.hero-stat-lime strong {
-  color: var(--ink-strong);
 }
 
 .hero p,
@@ -407,6 +398,17 @@ input {
   border-radius: 50%;
   background: var(--ok);
   box-shadow: 0 0 0 3px rgba(30, 109, 67, 0.1);
+}
+
+.toolbar-error {
+  margin: 8px 0 0;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 2px solid var(--album-red);
+  background: var(--paper-alert);
+  color: #8c1410;
+  font-size: 0.85rem;
+  font-weight: 700;
 }
 
 .toolbar-row {
@@ -700,11 +702,11 @@ input {
   content: attr(data-group);
   position: absolute;
   right: 12px;
-  bottom: -8px;
+  bottom: -6px;
   font-family: "Anton", "Arial Narrow", sans-serif;
-  font-size: 5rem;
+  font-size: 3.2rem;
   line-height: 1;
-  color: rgba(255, 255, 255, 0.24);
+  color: rgba(255, 255, 255, 0.14);
   pointer-events: none;
 }
 
@@ -950,6 +952,18 @@ input {
   align-items: start;
 }
 
+/* Grid/flex items default to min-width:auto, which lets the horizontally
+   scrollable bracket push the whole page wider than the viewport on mobile.
+   Allowing these wrappers to shrink keeps the bracket scroll self-contained. */
+.workspace-grid > * {
+  min-width: 0;
+}
+
+.bracket-shell,
+.bracket-grid {
+  max-width: 100%;
+}
+
 .modal-backdrop {
   position: fixed;
   inset: 0;
@@ -961,12 +975,11 @@ input {
 
 .match-modal {
   width: min(640px, 100%);
-  background:
-    radial-gradient(circle at 18% 18%, rgba(85, 217, 223, 0.18) 0, rgba(85, 217, 223, 0.18) 12%, transparent 12.5%),
-    radial-gradient(circle at 86% 20%, rgba(255, 107, 10, 0.18) 0, rgba(255, 107, 10, 0.18) 11%, transparent 11.5%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(248, 243, 232, 0.96));
-  border-radius: 28px;
-  border: 3px solid var(--album-blue);
+  max-height: calc(100vh - 48px);
+  overflow: auto;
+  background: var(--paper-2);
+  border-radius: 22px;
+  border: 3px solid var(--ink-strong);
   padding: 24px;
   box-shadow: 0 18px 0 rgba(17, 19, 25, 0.18);
 }
@@ -1020,19 +1033,38 @@ input {
 
 .modal-score-grid {
   display: grid;
-  grid-template-columns: 1fr 72px 72px 1fr;
-  gap: 10px;
+  grid-template-columns: minmax(0, 1fr) 76px auto 76px minmax(0, 1fr);
+  gap: 12px;
   align-items: center;
 }
 
 .modal-score-grid input {
   width: 100%;
-  padding: 10px 8px;
+  padding: 12px 8px;
   border-radius: 14px;
-  border: 2px solid #fff;
-  background: rgba(255, 255, 255, 0.9);
+  border: 2px solid var(--ink-strong);
+  background: #fff;
+  color: var(--ink-strong);
   text-align: center;
-  font-weight: 700;
+  font-family: "Anton", "Arial Narrow", "Avenir Next Condensed", "Helvetica Neue Condensed", sans-serif;
+  font-size: 1.9rem;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  box-shadow: 0 4px 0 rgba(17, 19, 25, 0.18);
+}
+
+.modal-score-grid input::placeholder {
+  color: rgba(17, 19, 25, 0.35);
+}
+
+.modal-score-x {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-family: "Anton", "Arial Narrow", sans-serif;
+  font-size: 1.6rem;
+  line-height: 1;
 }
 
 .team-name {
@@ -1243,19 +1275,6 @@ input {
 }
 
 @media (max-width: 1280px) {
-  .hero {
-    grid-template-columns: 1fr;
-  }
-
-  .hero-stats {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .hero-stat:nth-child(2),
-  .hero-stat:nth-child(3) {
-    margin-left: 0;
-  }
-
   .match-hub-strip {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -1355,7 +1374,7 @@ input {
   }
 
   .modal-score-grid {
-    grid-template-columns: 1fr 64px 64px 1fr;
+    grid-template-columns: minmax(0, 1fr) 64px auto 64px minmax(0, 1fr);
   }
 
   .modal-actions {
@@ -1371,26 +1390,12 @@ input {
 
 @media (max-width: 640px) {
   .hero {
-    padding: 18px;
-    border-radius: 26px;
+    padding: 22px 18px;
+    border-radius: 18px;
   }
 
   .hero h1 {
-    font-size: clamp(3rem, 20vw, 5.2rem);
-  }
-
-  .hero-year {
-    font-size: clamp(4.2rem, 24vw, 8rem);
-  }
-
-  .hero-year-top {
-    top: 12px;
-    right: 12px;
-  }
-
-  .hero-year-bottom {
-    right: 18px;
-    bottom: 18px;
+    font-size: clamp(2.4rem, 11vw, 3.4rem);
   }
 
   .section-nav {
@@ -1403,16 +1408,17 @@ input {
   }
 
   .hero-stats {
-    grid-template-columns: 1fr;
+    width: 100%;
+  }
+
+  .hero-stat {
+    flex: 1;
+    justify-content: center;
+    padding: 10px 12px;
   }
 
   .hero-stat strong {
-    font-size: 1.65rem;
-  }
-
-  .hero-stat:nth-child(2),
-  .hero-stat:nth-child(3) {
-    margin-left: 0;
+    font-size: 1.55rem;
   }
 
   .toolbar-row {
@@ -1455,17 +1461,17 @@ input {
   }
 
   .modal-score-grid {
-    grid-template-columns: 1fr 56px 56px;
-    gap: 10px 8px;
+    grid-template-columns: minmax(0, 1fr) 48px auto 48px minmax(0, 1fr);
+    gap: 8px;
+  }
+
+  .modal-score-grid input {
+    font-size: 1.5rem;
+    padding: 10px 4px;
   }
 
   .team-name {
     font-size: 0.92rem;
-  }
-
-  .team-away {
-    grid-column: 1 / -1;
-    text-align: left;
   }
 
   .modal-actions {

@@ -66,6 +66,7 @@ const STAGE_ORDER = [
 export default function App() {
   const [workspace, setWorkspace] = useState(() => loadWorkspace() ?? createInitialWorkspace(TOURNAMENT_BASE));
   const [selectedMatchId, setSelectedMatchId] = useState<string | null>(null);
+  const [syncState, setSyncState] = useState<"idle" | "pending" | "error">("idle");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const groupMatches = useMemo(
@@ -113,9 +114,15 @@ export default function App() {
   }
 
   async function handleSync() {
-    const feedMatches = await fetchFeedMatches();
-    const nextWorkspace = mergeFeedMatches(workspace, feedMatches);
-    commitWorkspace(nextWorkspace);
+    setSyncState("pending");
+    try {
+      const feedMatches = await fetchFeedMatches();
+      const nextWorkspace = mergeFeedMatches(workspace, feedMatches);
+      commitWorkspace(nextWorkspace);
+      setSyncState("idle");
+    } catch {
+      setSyncState("error");
+    }
   }
 
   function handleSaveScore(homeScore: number | null, awayScore: number | null) {
@@ -153,52 +160,40 @@ export default function App() {
 
   return (
     <main className="app-shell">
+      <a className="skip-link" href="#partidas">
+        Pular para o conteúdo
+      </a>
       <header className="hero">
-        <div className="hero-orbit" aria-hidden="true">
-          <span className="hero-year hero-year-top">20</span>
-          <span className="hero-year hero-year-bottom">26</span>
-        </div>
         <div className="hero-copy">
-          <p className="eyebrow hero-kicker">Poster interativo • Copa 2026</p>
-          <div className="hero-title-stack">
-            <span className="hero-stamp">album edition</span>
-            <h1>
-              <span>Copa 2026</span>
-              Smart Bracket
-            </h1>
-          </div>
-          <p className="hero-deck">A chave inteira em uma capa viva, editável e compartilhável.</p>
+          <p className="eyebrow hero-kicker">Copa do Mundo 2026 • pôster interativo</p>
+          <h1>
+            Copa 2026
+            <span>Smart Bracket</span>
+          </h1>
           <p className="hero-lead">
             Acompanhe a chave, edite placares manualmente e compartilhe o mesmo estado com seus
-            amigos sem login nem complicação.
+            amigos — sem login nem complicação.
           </p>
-          <p className="hero-note">
-            Busca automática opcional, override manual preservado e exportação simples em JSON.
-          </p>
-          <div className="hero-ribbon-list" aria-label="Características da home">
-            <span>editar placares</span>
-            <span>importar e exportar</span>
-            <span>sem login</span>
-          </div>
-        </div>
-        <div className="hero-stats" aria-label="Resumo da home">
-          <div className="hero-stat hero-stat-blue">
-            <strong>{filledMatchCount}</strong>
-            <span>placares</span>
-          </div>
-          <div className="hero-stat hero-stat-red">
-            <strong>{manualMatchCount}</strong>
-            <span>manuais</span>
-          </div>
-          <div className="hero-stat hero-stat-lime">
-            <strong>{feedMatchCount}</strong>
-            <span>da API</span>
+          <div className="hero-stats" aria-label="Resumo da home">
+            <div className="hero-stat">
+              <strong>{filledMatchCount}</strong>
+              <span>placares</span>
+            </div>
+            <div className="hero-stat">
+              <strong>{manualMatchCount}</strong>
+              <span>manuais</span>
+            </div>
+            <div className="hero-stat">
+              <strong>{feedMatchCount}</strong>
+              <span>da API</span>
+            </div>
           </div>
         </div>
       </header>
 
       <WorkspaceToolbar
         lastSyncLabel={workspace.meta.lastSyncAt ?? "ainda não sincronizado"}
+        syncState={syncState}
         onExport={handleExport}
         onImportClick={handleImportClick}
         onSync={() => {
