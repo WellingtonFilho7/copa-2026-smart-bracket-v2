@@ -7,17 +7,27 @@ type ConflictPanelProps = {
 export function ConflictPanel({ conflicts }: ConflictPanelProps) {
   return (
     <aside className="conflict-panel">
-      <h3>Conflitos</h3>
-      <p>{conflicts.length} conflito aberto</p>
+      <div className="conflict-panel-header">
+        <div>
+          <p className="eyebrow">Revisão</p>
+          <h3>Conflitos</h3>
+        </div>
+        <span className="conflict-count-badge">{conflicts.length}</span>
+      </div>
+      <p className="muted-copy">{conflicts.length} conflito aberto</p>
       {conflicts.length === 0 ? (
         <p className="muted-copy">Sem divergências entre API e edição manual.</p>
       ) : (
-        <ul>
+        <ul className="conflict-list">
           {conflicts.map((conflict) => (
             <li key={conflict.matchId}>
-              <strong>{conflict.matchId}</strong> manual {conflict.manualValue.homeScore} x{" "}
-              {conflict.manualValue.awayScore} • API {conflict.externalValue.homeScore} x{" "}
-              {conflict.externalValue.awayScore}
+              <strong>{conflict.matchId}</strong>
+              <span>
+                Manual {conflict.manualValue.homeScore} x {conflict.manualValue.awayScore}
+              </span>
+              <span>
+                API {conflict.externalValue.homeScore} x {conflict.externalValue.awayScore}
+              </span>
             </li>
           ))}
         </ul>

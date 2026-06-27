@@ -117,6 +117,11 @@ export default function App() {
       }),
     [stageMatches, workspace],
   );
+  const filledMatchCount = quickMatches.filter(
+    (match) => match.homeScore !== null || match.awayScore !== null,
+  ).length;
+  const manualMatchCount = quickMatches.filter((match) => match.source === "manual").length;
+  const feedMatchCount = quickMatches.filter((match) => match.source === "feed").length;
 
   function commitWorkspace(nextWorkspace: typeof workspace) {
     setWorkspace(nextWorkspace);
@@ -165,8 +170,28 @@ export default function App() {
   return (
     <main className="app-shell">
       <header className="hero">
-        <h1>Copa 2026 Smart Bracket</h1>
-        <p>Bracket principal como home, edição total e conflitos visíveis entre API e usuário.</p>
+        <div className="hero-copy">
+          <p className="eyebrow">Copa 2026 • mobile workspace</p>
+          <h1>Copa 2026 Smart Bracket</h1>
+          <p className="hero-lead">
+            Um bracket pessoal para acompanhar a fase eliminatória, ajustar placares na mão e
+            decidir conflitos sem depender de login.
+          </p>
+        </div>
+        <div className="hero-stats" aria-label="Resumo da home">
+          <div className="hero-stat">
+            <strong>{filledMatchCount}</strong>
+            <span>placares visíveis</span>
+          </div>
+          <div className="hero-stat">
+            <strong>{manualMatchCount}</strong>
+            <span>edições manuais</span>
+          </div>
+          <div className="hero-stat">
+            <strong>{feedMatchCount}</strong>
+            <span>vindos da API</span>
+          </div>
+        </div>
       </header>
 
       <WorkspaceToolbar
@@ -188,8 +213,12 @@ export default function App() {
 
       <MatchHub matches={quickMatches} conflictCount={conflictEntries.length} onOpenMatch={setSelectedMatchId} />
 
-      <section id="grupos">
-      <GroupCards teams={workspace.tournament.teams} />
+      <section className="section-block" id="grupos">
+        <div className="section-heading">
+          <p className="eyebrow">Mapa do torneio</p>
+          <h2>Grupos classificados</h2>
+        </div>
+        <GroupCards teams={workspace.tournament.teams} />
       </section>
 
       <section className="workspace-grid">
