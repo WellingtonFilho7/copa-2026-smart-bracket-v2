@@ -171,26 +171,17 @@ export default function App() {
     <main className="app-shell">
       <header className="hero">
         <div className="hero-copy">
-          <p className="eyebrow">Copa 2026 • mobile workspace</p>
+          <p className="eyebrow">World Cup 2026 • bracket poster</p>
           <h1>Copa 2026 Smart Bracket</h1>
           <p className="hero-lead">
-            Um bracket pessoal para acompanhar a fase eliminatória, ajustar placares na mão e
-            decidir conflitos sem depender de login.
+            Acompanhe o mata-mata, ajuste resultados e revise conflitos em uma página com cara
+            de tabela oficial.
           </p>
         </div>
-        <div className="hero-stats" aria-label="Resumo da home">
-          <div className="hero-stat">
-            <strong>{filledMatchCount}</strong>
-            <span>placares visíveis</span>
-          </div>
-          <div className="hero-stat">
-            <strong>{manualMatchCount}</strong>
-            <span>edições manuais</span>
-          </div>
-          <div className="hero-stat">
-            <strong>{feedMatchCount}</strong>
-            <span>vindos da API</span>
-          </div>
+        <div className="hero-ribbon" aria-label="Resumo da home">
+          <span>{filledMatchCount} placares</span>
+          <span>{manualMatchCount} manuais</span>
+          <span>{feedMatchCount} da API</span>
         </div>
       </header>
 
