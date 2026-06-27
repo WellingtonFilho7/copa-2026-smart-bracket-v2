@@ -23,6 +23,9 @@
   --album-plum: #8f86d8;
   --ok: #12925d;
   --warn: #d34c14;
+  --ink-strong: #0a0c11;
+  --ink-soft: #1d2330;
+  --paper-contrast: rgba(255, 250, 243, 0.94);
   font-family: "Fraunces", "Palatino Linotype", "Book Antiqua", Georgia, serif;
   background: var(--paper);
   color: var(--ink);
@@ -118,6 +121,15 @@ input {
   box-shadow: 0 18px 0 rgba(17, 19, 25, 0.12);
 }
 
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(10, 12, 17, 0.58) 0 46%, rgba(10, 12, 17, 0.26) 46% 72%, rgba(10, 12, 17, 0.08) 72% 100%);
+  pointer-events: none;
+}
+
 .hero h1,
 .bracket-header h2 {
   font-family: "Anton", "Arial Narrow", "Avenir Next Condensed", "Helvetica Neue Condensed", sans-serif;
@@ -160,7 +172,7 @@ input {
 }
 
 .hero-kicker {
-  color: #fff;
+  color: rgba(255, 255, 255, 0.96);
 }
 
 .hero-title-stack {
@@ -175,7 +187,7 @@ input {
   min-height: 34px;
   padding: 0 14px;
   border-radius: 999px;
-  background: rgba(17, 19, 25, 0.86);
+  background: rgba(10, 12, 17, 0.94);
   color: #fff;
   font-family: "Anton", "Arial Narrow", sans-serif;
   font-size: 0.84rem;
@@ -191,13 +203,13 @@ input {
 }
 
 .hero h1 span {
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(255, 255, 255, 0.98);
 }
 
 .hero-deck {
   margin: 0;
   max-width: 30rem;
-  color: rgba(255, 255, 255, 0.88);
+  color: rgba(255, 255, 255, 0.98);
   font-size: 1.05rem;
   font-style: italic;
 }
@@ -205,7 +217,7 @@ input {
 .hero-lead {
   margin: 0;
   max-width: 36rem;
-  color: #fff;
+  color: rgba(255, 255, 255, 0.98);
   font-size: 1.08rem;
   line-height: 1.58;
   max-width: 34rem;
@@ -214,7 +226,7 @@ input {
 .hero-note {
   margin: 0;
   max-width: 33rem;
-  color: rgba(255, 255, 255, 0.82);
+  color: rgba(255, 255, 255, 0.92);
   font-size: 0.88rem;
   line-height: 1.5;
 }
@@ -231,8 +243,8 @@ input {
   min-height: 32px;
   padding: 0 12px;
   border-radius: 999px;
-  border: 2px solid rgba(255, 255, 255, 0.88);
-  background: rgba(17, 19, 25, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.96);
+  background: rgba(10, 12, 17, 0.5);
   color: #fff;
   font-size: 0.78rem;
   font-weight: 700;
@@ -255,7 +267,7 @@ input {
   padding: 16px;
   min-height: 118px;
   border-radius: 26px;
-  border: 3px solid #fff;
+  border: 3px solid rgba(255, 255, 255, 0.96);
   color: #fff;
   box-shadow: 0 10px 0 rgba(17, 19, 25, 0.09);
 }
@@ -293,6 +305,12 @@ input {
   background: var(--album-leaf);
 }
 
+.hero-stat-lime,
+.hero-stat-lime span,
+.hero-stat-lime strong {
+  color: var(--ink-strong);
+}
+
 .hero p,
 .bracket-header p,
 .muted-copy,
@@ -302,7 +320,9 @@ input {
 
 .hero h1,
 .hero .eyebrow,
-.hero .hero-lead {
+.hero .hero-lead,
+.hero .hero-note,
+.hero .hero-deck {
   color: #fff;
 }
 
@@ -375,8 +395,8 @@ input {
   padding: 6px 10px;
   border-radius: 999px;
   border: 2px solid rgba(48, 76, 207, 0.18);
-  background: rgba(255, 255, 255, 0.78);
-  color: var(--ink);
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--ink-strong);
   font-size: 0.8rem;
   font-variant-numeric: tabular-nums;
 }
@@ -455,7 +475,7 @@ input {
   margin: 0;
   max-width: 19rem;
   text-align: right;
-  color: var(--muted);
+  color: var(--ink-soft);
   font-size: 0.92rem;
   font-style: italic;
 }
@@ -509,7 +529,7 @@ input {
 
 .match-hub-note {
   margin: 10px 0 0;
-  color: var(--muted);
+  color: var(--ink-soft);
   font-size: 0.88rem;
   font-style: italic;
 }
@@ -527,8 +547,8 @@ input {
 }
 
 .match-metric {
-  background: rgba(255, 255, 255, 0.84);
-  border: 2px solid rgba(48, 76, 207, 0.18);
+  background: rgba(255, 255, 255, 0.94);
+  border: 2px solid rgba(48, 76, 207, 0.24);
   border-radius: 22px;
   padding: 12px;
   text-align: center;
@@ -545,7 +565,7 @@ input {
 .match-metric span {
   display: block;
   font-size: 0.76rem;
-  color: var(--muted);
+  color: var(--ink-soft);
   text-transform: uppercase;
   margin-top: 6px;
 }
@@ -561,9 +581,9 @@ input {
 }
 
 .match-quick-card {
-  background: rgba(255, 255, 255, 0.94);
+  background: rgba(255, 255, 255, 0.97);
   border-radius: 26px;
-  border: 3px solid rgba(255, 255, 255, 0.96);
+  border: 3px solid rgba(255, 255, 255, 0.98);
   padding: 16px;
   display: grid;
   gap: 8px;
@@ -614,7 +634,7 @@ input {
 }
 
 .match-quick-score span {
-  color: var(--muted);
+  color: var(--ink-soft);
   font-size: 0.95rem;
 }
 
@@ -622,7 +642,7 @@ input {
   display: flex;
   justify-content: space-between;
   gap: 10px;
-  color: var(--muted);
+  color: var(--ink-soft);
   font-size: 0.74rem;
   text-transform: uppercase;
   font-variant-numeric: tabular-nums;
@@ -684,7 +704,7 @@ input {
   font-family: "Anton", "Arial Narrow", sans-serif;
   font-size: 5rem;
   line-height: 1;
-  color: rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.24);
   pointer-events: none;
 }
 
@@ -701,7 +721,8 @@ input {
   min-height: 28px;
   padding: 0 10px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.24);
+  border: 1px solid rgba(255, 255, 255, 0.28);
   color: inherit;
   font-size: 0.74rem;
   font-weight: 700;
@@ -727,7 +748,7 @@ input {
   align-items: center;
   gap: 10px;
   padding: 8px 0;
-  border-top: 1px dashed rgba(255, 255, 255, 0.34);
+  border-top: 1px dashed rgba(255, 255, 255, 0.42);
   color: #fff;
 }
 
@@ -738,7 +759,7 @@ input {
   align-items: center;
   padding: 5px 0;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.22);
   color: #fff;
   font-size: 0.72rem;
   font-weight: 700;
@@ -775,6 +796,7 @@ input {
 .bracket-lead {
   max-width: 38rem;
   margin: 8px auto 0;
+  color: var(--ink-soft);
 }
 
 .bracket-grid {
@@ -843,7 +865,7 @@ input {
 
 .match-card-time {
   font-weight: 700;
-  color: var(--album-blue);
+  color: #1d347c;
 }
 
 .match-card-body {
@@ -977,7 +999,7 @@ input {
 .modal-kickoff {
   margin: 8px 0 0;
   font-weight: 700;
-  color: var(--album-blue);
+  color: #1d347c;
   font-variant-numeric: tabular-nums;
 }
 
@@ -1133,6 +1155,18 @@ input {
 .group-d .group-card-header .eyebrow,
 .group-d .group-team-list li,
 .group-d .group-team-seed,
+.group-f .group-card-header h3,
+.group-f .group-card-header .eyebrow,
+.group-f .group-team-list li,
+.group-f .group-team-seed,
+.group-g .group-card-header h3,
+.group-g .group-card-header .eyebrow,
+.group-g .group-team-list li,
+.group-g .group-team-seed,
+.group-h .group-card-header h3,
+.group-h .group-card-header .eyebrow,
+.group-h .group-team-list li,
+.group-h .group-team-seed,
 .group-k .group-card-header h3,
 .group-k .group-card-header .eyebrow,
 .group-k .group-team-list li,
@@ -1141,21 +1175,48 @@ input {
 .group-l .group-card-header .eyebrow,
 .group-l .group-team-list li,
 .group-l .group-team-seed {
-  color: var(--ink);
+  color: var(--ink-strong);
 }
 
 .group-c .group-team-list li,
 .group-d .group-team-list li,
+.group-f .group-team-list li,
+.group-g .group-team-list li,
+.group-h .group-team-list li,
 .group-k .group-team-list li,
 .group-l .group-team-list li {
-  border-top-color: rgba(17, 19, 25, 0.16);
+  border-top-color: rgba(17, 19, 25, 0.22);
 }
 
 .group-c .group-team-seed,
 .group-d .group-team-seed,
+.group-f .group-team-seed,
+.group-g .group-team-seed,
+.group-h .group-team-seed,
 .group-k .group-team-seed,
 .group-l .group-team-seed {
-  background: rgba(17, 19, 25, 0.1);
+  background: rgba(17, 19, 25, 0.12);
+}
+
+.group-c .group-card-count,
+.group-d .group-card-count,
+.group-f .group-card-count,
+.group-g .group-card-count,
+.group-h .group-card-count,
+.group-k .group-card-count,
+.group-l .group-card-count {
+  background: rgba(17, 19, 25, 0.12);
+  border-color: rgba(17, 19, 25, 0.18);
+}
+
+.group-c::after,
+.group-d::after,
+.group-f::after,
+.group-g::after,
+.group-h::after,
+.group-k::after,
+.group-l::after {
+  color: rgba(17, 19, 25, 0.14);
 }
 
 .inline-link {
