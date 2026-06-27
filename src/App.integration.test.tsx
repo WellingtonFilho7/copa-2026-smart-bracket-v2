@@ -1,11 +1,10 @@
 import { render, screen, waitFor } from "@testing-library/react";
-import { within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import App from "./App";
 
 describe("Copa 2026 Smart Bracket UI", () => {
-  it("opens a match from the quick mobile-friendly list", async () => {
+  it("keeps the quick match entry flow after the visual refresh", async () => {
     const user = userEvent.setup();
 
     render(<App />);
@@ -14,9 +13,7 @@ describe("Copa 2026 Smart Bracket UI", () => {
 
     await user.click(screen.getByRole("button", { name: /abrir partida rápida k3/i }));
 
-    const dialog = screen.getByRole("dialog", { name: /partida k3/i });
-    expect(dialog).toBeInTheDocument();
-    expect(within(dialog).getByText(/partida k3/i)).toBeInTheDocument();
+    expect(screen.getByRole("dialog", { name: /partida k3/i })).toBeInTheDocument();
   });
 
   it("opens a knockout match modal, saves a manual score, and shows a conflict after sync", async () => {

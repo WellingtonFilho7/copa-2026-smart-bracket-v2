@@ -6,10 +6,12 @@
   --ink: #1f2328;
   --muted: #54606c;
   --line: #d2c5b4;
+  --line-strong: #bba78e;
   --accent: #17355b;
   --accent-2: #8f2d1f;
   --ok: #1e6d43;
   --warn: #a45708;
+  --paper-strong: #f9f0e2;
   font-family: "Palatino Linotype", "Book Antiqua", Georgia, serif;
   background: radial-gradient(circle at top, #fffdf7 0%, var(--paper) 58%, #e8dece 100%);
   color: var(--ink);
@@ -150,15 +152,14 @@ input {
   justify-content: space-between;
   gap: 16px;
   align-items: center;
-  background:
-    linear-gradient(180deg, rgba(255, 252, 246, 0.95), rgba(247, 239, 227, 0.9)),
-    repeating-linear-gradient(
-      -45deg,
-      rgba(143, 45, 31, 0.02) 0,
-      rgba(143, 45, 31, 0.02) 10px,
-      transparent 10px,
-      transparent 22px
-    );
+}
+
+.hero-ribbon,
+.toolbar,
+.match-hub,
+.group-card {
+  border: 1px solid var(--line-strong);
+  background: var(--paper-strong);
 }
 
 .toolbar-copy {
@@ -166,25 +167,10 @@ input {
   gap: 8px;
 }
 
-.sync-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  width: fit-content;
-  padding: 7px 11px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.88);
-  border: 1px solid rgba(132, 108, 67, 0.22);
+.toolbar-lead {
+  margin: 0;
+  max-width: 32rem;
   color: var(--muted);
-  font-size: 0.82rem;
-}
-
-.sync-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--ok);
-  box-shadow: 0 0 0 4px rgba(30, 109, 67, 0.12);
 }
 
 .toolbar-row {
@@ -245,10 +231,6 @@ input {
 }
 
 .match-hub {
-  background:
-    linear-gradient(145deg, rgba(255, 249, 239, 0.94), rgba(249, 240, 224, 0.8)),
-    radial-gradient(circle at top right, rgba(143, 45, 31, 0.1), transparent 36%);
-  border: 1px solid rgba(162, 136, 92, 0.32);
   border-radius: 28px;
   padding: 22px;
   margin-bottom: 22px;
@@ -311,12 +293,13 @@ input {
 }
 
 .match-quick-card {
-  background: rgba(255, 255, 255, 0.82);
-  border: 1px solid rgba(162, 136, 92, 0.24);
-  border-radius: 20px;
+  background: rgba(255, 252, 247, 0.9);
+  border-radius: 10px;
+  border: 1px solid var(--line-strong);
   padding: 14px;
   display: grid;
-  gap: 10px;
+  gap: 8px;
+  box-shadow: none;
 }
 
 .match-quick-card h3 {
@@ -330,7 +313,8 @@ input {
   align-items: center;
   gap: 10px;
   font-family: "Arial Narrow", "Avenir Next Condensed", "Helvetica Neue Condensed", sans-serif;
-  font-size: 1.45rem;
+  font-size: clamp(2rem, 6vw, 3rem);
+  font-weight: 700;
   line-height: 1;
   color: var(--ink);
 }
@@ -395,18 +379,15 @@ input {
 
 .group-card {
   --group-accent: var(--accent);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(251, 244, 233, 0.94));
-  border: 1px solid color-mix(in srgb, var(--group-accent) 28%, white);
   border-radius: 22px;
+  border-left: 4px solid var(--group-accent);
   padding: 14px;
   box-shadow: 0 10px 26px rgba(69, 51, 22, 0.06);
 }
 
 .group-card-header {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  align-items: start;
+  display: grid;
+  gap: 6px;
   margin-bottom: 10px;
 }
 
@@ -414,18 +395,6 @@ input {
   margin: 0;
   text-transform: uppercase;
   font-size: 0.98rem;
-}
-
-.group-card-header span {
-  display: inline-flex;
-  align-items: center;
-  padding: 6px 10px;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--group-accent) 10%, white);
-  color: color-mix(in srgb, var(--group-accent) 70%, black);
-  font-size: 0.73rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
 }
 
 .group-team-list {

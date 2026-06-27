@@ -60,14 +60,14 @@ export function MatchHub({ matches, conflictCount, onOpenMatch }: MatchHubProps)
               <span>{match.stage}</span>
               <span>{match.kickoff}</span>
             </div>
-            <h3>
-              {match.homeTeam} x {match.awayTeam}
-            </h3>
             <div className="match-quick-score" aria-label={`Placar atual ${match.id}`}>
               <strong>{match.homeScore ?? "-"}</strong>
               <span>x</span>
               <strong>{match.awayScore ?? "-"}</strong>
             </div>
+            <h3>
+              {match.homeTeam} x {match.awayTeam}
+            </h3>
             <div className="match-quick-status">
               <span className={`status-pill status-${match.source}`}>{sourceCopy[match.source]}</span>
               {match.hasConflict ? <span className="status-pill status-conflict">conflito</span> : null}

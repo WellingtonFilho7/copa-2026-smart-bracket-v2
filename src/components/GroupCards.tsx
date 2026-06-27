@@ -28,19 +28,13 @@ function GroupCard({ group, teams }: { group: string; teams: TeamDefinition[] })
   return (
     <section className={`group-card group-${group.toLowerCase()}`}>
       <header className="group-card-header">
-        <div>
-          <p className="eyebrow">Grupo {group}</p>
-          <h3>Bloco {group}</h3>
-        </div>
-        <span>{teams.length} seleções</span>
+        <p className="eyebrow">Grupo {group}</p>
+        <h3>{teams.length} seleções</h3>
       </header>
       <ul className="group-team-list">
-        {teams.map((team, index) => (
+        {teams.map((team) => (
           <li key={team.code}>
-            <span className="group-team-seed">
-              {group}
-              {index + 1}
-            </span>
+            <span className="group-team-seed">{team.code}</span>
             <span>{team.name}</span>
           </li>
         ))}
