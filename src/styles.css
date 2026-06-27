@@ -137,7 +137,6 @@ input {
   color: var(--muted);
 }
 
-.toolbar,
 .conflict-panel {
   background: rgba(255, 250, 241, 0.92);
   border: 1px solid var(--line);
@@ -152,10 +151,15 @@ input {
   justify-content: space-between;
   gap: 16px;
   align-items: center;
+  border: 1px solid var(--line-strong);
+  background: var(--paper-strong);
+  border-radius: 20px;
+  padding: 18px;
+  margin-bottom: 18px;
+  box-shadow: 0 12px 30px rgba(69, 51, 22, 0.08);
 }
 
 .hero-ribbon,
-.toolbar,
 .match-hub,
 .group-card {
   border: 1px solid var(--line-strong);
@@ -171,6 +175,28 @@ input {
   margin: 0;
   max-width: 32rem;
   color: var(--muted);
+}
+
+.toolbar-sync {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  width: fit-content;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--line-strong) 75%, white);
+  background: rgba(255, 255, 255, 0.5);
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.toolbar-sync-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ok);
+  box-shadow: 0 0 0 3px rgba(30, 109, 67, 0.1);
 }
 
 .toolbar-row {

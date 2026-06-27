@@ -9,13 +9,17 @@ export function WorkspaceToolbar({
   onSync,
   onExport,
   onImportClick,
-  lastSyncLabel: _lastSyncLabel,
+  lastSyncLabel,
 }: WorkspaceToolbarProps) {
   return (
     <div className="toolbar">
       <div className="toolbar-copy">
         <p className="eyebrow">Controle do workspace</p>
         <p className="toolbar-lead">Atualize o feed, exporte o estado e retome de onde parou.</p>
+        <p className="toolbar-sync" aria-label="Última sincronização">
+          <span className="toolbar-sync-dot" aria-hidden="true" />
+          Última sync: {lastSyncLabel}
+        </p>
       </div>
       <div className="toolbar-row">
         <button className="primary-button" type="button" onClick={onSync}>

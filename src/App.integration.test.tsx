@@ -10,6 +10,7 @@ describe("Copa 2026 Smart Bracket UI", () => {
     render(<App />);
 
     expect(screen.getByRole("heading", { name: /partidas rápidas/i })).toBeInTheDocument();
+    expect(screen.getByLabelText(/última sincronização/i)).toHaveTextContent(/ainda não sincronizado/i);
 
     await user.click(screen.getByRole("button", { name: /abrir partida rápida k3/i }));
 
