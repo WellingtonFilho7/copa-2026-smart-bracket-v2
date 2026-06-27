@@ -2,8 +2,15 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import App from "./App";
+import { ConflictPanel } from "./components/ConflictPanel";
 
 describe("Copa 2026 Smart Bracket UI", () => {
+  it("uses neutral summary copy when there are no open conflicts", () => {
+    render(<ConflictPanel conflicts={[]} />);
+
+    expect(screen.getByText(/nenhum conflito aberto/i)).toBeInTheDocument();
+  });
+
   it("keeps the quick match entry flow after the visual refresh", async () => {
     const user = userEvent.setup();
 

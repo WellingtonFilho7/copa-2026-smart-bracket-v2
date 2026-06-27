@@ -5,6 +5,13 @@ type ConflictPanelProps = {
 };
 
 export function ConflictPanel({ conflicts }: ConflictPanelProps) {
+  const summaryCopy =
+    conflicts.length === 0
+      ? "Nenhum conflito aberto"
+      : conflicts.length === 1
+        ? "1 conflito aberto"
+        : `${conflicts.length} conflitos abertos`;
+
   return (
     <aside className="conflict-panel">
       <div className="conflict-panel-header">
@@ -14,7 +21,7 @@ export function ConflictPanel({ conflicts }: ConflictPanelProps) {
         </div>
         <span className="conflict-count-badge">{conflicts.length}</span>
       </div>
-      <p className="muted-copy">{conflicts.length} conflito aberto</p>
+      <p className="muted-copy">{summaryCopy}</p>
       {conflicts.length === 0 ? (
         <p className="muted-copy">Sem divergências entre API e edição manual.</p>
       ) : (
