@@ -161,7 +161,7 @@ export default function App() {
   return (
     <main className="app-shell">
       <a className="skip-link" href="#partidas">
-        Pular para o conteúdo
+        Pular para partidas
       </a>
       <header className="hero">
         <div className="hero-copy">
@@ -223,14 +223,14 @@ export default function App() {
       </section>
 
       <section className="workspace-grid">
-        <div id="chave">
+        <div className="workspace-primary" id="chave">
           <BracketHome
             matches={stageCards}
             conflictCountByMatch={conflictCountByMatch}
             onOpenMatch={setSelectedMatchId}
           />
         </div>
-        <div id="conflitos">
+        <div className="workspace-sidebar" id="conflitos">
           <ConflictPanel conflicts={conflictEntries} />
         </div>
       </section>

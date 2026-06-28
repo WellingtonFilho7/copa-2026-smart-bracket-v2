@@ -39,51 +39,53 @@ export function BracketHome({
         </p>
       </div>
 
-      <div className="bracket-grid">
-        {columns.map((column) => (
-          <div className="bracket-column" key={`${column.title}-${column.ids[0]}`}>
-            <h3>{column.title}</h3>
-            {column.ids.map((id) => {
-              const match = matches[id];
-              if (!match) {
-                return null;
-              }
+      <div className="bracket-scroll" aria-label="Tabela horizontal do chaveamento">
+        <div className="bracket-grid">
+          {columns.map((column) => (
+            <div className="bracket-column" key={`${column.title}-${column.ids[0]}`}>
+              <h3>{column.title}</h3>
+              {column.ids.map((id) => {
+                const match = matches[id];
+                if (!match) {
+                  return null;
+                }
 
-              const conflictCount = conflictCountByMatch[id] ?? 0;
-              return (
-                <button
-                  key={id}
-                  className="match-card"
-                  type="button"
-                  aria-label={`Abrir partida ${id}`}
-                  onClick={() => onOpenMatch(id)}
-                >
-                  <div className="match-card-meta">
-                    <span className="match-card-id">{id}</span>
-                    <span className="match-card-time">{match.kickoff}</span>
-                  </div>
-                  <div className="match-card-body">
-                    <span className="team-line">{match.homeTeam}</span>
-                    <span className="team-line">{match.awayTeam}</span>
-                  </div>
-                  <div className="match-card-scoreline" aria-label={`Placar atual ${id}`}>
-                    <strong className="match-card-score-value">{match.homeScore ?? "-"}</strong>
-                    <span>x</span>
-                    <strong className="match-card-score-value">{match.awayScore ?? "-"}</strong>
-                  </div>
-                  <div className="match-card-foot">
-                    <span className={`match-card-source match-card-source-${match.source}`}>
-                      {sourceCopy[match.source]}
-                    </span>
-                    {conflictCount > 0 ? (
-                      <span className="conflict-badge">{conflictCount} conflito</span>
-                    ) : null}
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-        ))}
+                const conflictCount = conflictCountByMatch[id] ?? 0;
+                return (
+                  <button
+                    key={id}
+                    className="match-card"
+                    type="button"
+                    aria-label={`Abrir partida ${id}`}
+                    onClick={() => onOpenMatch(id)}
+                  >
+                    <div className="match-card-meta">
+                      <span className="match-card-id">{id}</span>
+                      <span className="match-card-time">{match.kickoff}</span>
+                    </div>
+                    <div className="match-card-body">
+                      <span className="team-line">{match.homeTeam}</span>
+                      <span className="team-line">{match.awayTeam}</span>
+                    </div>
+                    <div className="match-card-scoreline" aria-label={`Placar atual ${id}`}>
+                      <strong className="match-card-score-value">{match.homeScore ?? "-"}</strong>
+                      <span>x</span>
+                      <strong className="match-card-score-value">{match.awayScore ?? "-"}</strong>
+                    </div>
+                    <div className="match-card-foot">
+                      <span className={`match-card-source match-card-source-${match.source}`}>
+                        {sourceCopy[match.source]}
+                      </span>
+                      {conflictCount > 0 ? (
+                        <span className="conflict-badge">{conflictCount} conflito</span>
+                      ) : null}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );

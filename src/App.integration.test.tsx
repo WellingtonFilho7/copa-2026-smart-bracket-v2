@@ -60,4 +60,24 @@ describe("Copa 2026 Smart Bracket UI", () => {
 
     expect(screen.getByText(/api sugeriu 1 x 0/i)).toBeInTheDocument();
   });
+
+  it("traps focus inside the match modal", async () => {
+    const user = userEvent.setup();
+
+    render(<App />);
+
+    await user.click(screen.getByRole("button", { name: /abrir partida rápida k3/i }));
+
+    const dialog = screen.getByRole("dialog", { name: /partida k3/i });
+    const closeButton = screen.getByRole("button", { name: /fechar/i });
+    const structureButton = screen.getByRole("button", { name: /ver estrutura da chave/i });
+
+    expect(dialog).toHaveFocus();
+
+    await user.tab();
+    expect(closeButton).toHaveFocus();
+
+    await user.tab({ shift: true });
+    expect(structureButton).toHaveFocus();
+  });
 });

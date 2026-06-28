@@ -49,6 +49,33 @@ export function MatchModal({
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
         onCloseRef.current();
+        return;
+      }
+
+      if (event.key !== "Tab") {
+        return;
+      }
+
+      const focusable = getFocusableElements(dialogRef.current);
+      if (focusable.length === 0) {
+        return;
+      }
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const active = document.activeElement as HTMLElement | null;
+
+      if (event.shiftKey) {
+        if (active === first || active === dialogRef.current) {
+          event.preventDefault();
+          last.focus();
+        }
+        return;
+      }
+
+      if (active === last || active === dialogRef.current) {
+        event.preventDefault();
+        first.focus();
       }
     }
     document.addEventListener("keydown", handleKeyDown);
@@ -87,34 +114,34 @@ export function MatchModal({
 
         <div className="modal-score-shell">
           <div className="modal-score-grid">
-          <div className="team-name">{match.homeTeam}</div>
-          <label>
-            <span className="sr-only">Placar casa</span>
-            <input
-              aria-label="Placar casa"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              placeholder="0"
-              value={homeScore}
-              onChange={(event) => setHomeScore(event.target.value)}
-            />
-          </label>
-          <span className="modal-score-x" aria-hidden="true">
-            ×
-          </span>
-          <label>
-            <span className="sr-only">Placar fora</span>
-            <input
-              aria-label="Placar fora"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              placeholder="0"
-              value={awayScore}
-              onChange={(event) => setAwayScore(event.target.value)}
-            />
-          </label>
-          <div className="team-name team-away">{match.awayTeam}</div>
-        </div>
+            <div className="team-name team-home">{match.homeTeam}</div>
+            <label className="score-field home-score-field">
+              <span className="sr-only">Placar casa</span>
+              <input
+                aria-label="Placar casa"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                placeholder="0"
+                value={homeScore}
+                onChange={(event) => setHomeScore(event.target.value)}
+              />
+            </label>
+            <span className="modal-score-x" aria-hidden="true">
+              ×
+            </span>
+            <label className="score-field away-score-field">
+              <span className="sr-only">Placar fora</span>
+              <input
+                aria-label="Placar fora"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                placeholder="0"
+                value={awayScore}
+                onChange={(event) => setAwayScore(event.target.value)}
+              />
+            </label>
+            <div className="team-name team-away">{match.awayTeam}</div>
+          </div>
         </div>
 
         <div className="source-line modal-source">Fonte atual: {sourceLabel}</div>
@@ -169,5 +196,17 @@ export function MatchModal({
         ) : null}
       </section>
     </div>
+  );
+}
+
+function getFocusableElements(container: HTMLElement | null) {
+  if (!container) {
+    return [];
+  }
+
+  return Array.from(
+    container.querySelectorAll<HTMLElement>(
+      'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+    ),
   );
 }
