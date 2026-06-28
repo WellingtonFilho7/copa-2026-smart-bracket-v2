@@ -192,10 +192,12 @@ export function BracketHome({
               className={`bracket-stage-list bracket-stage-list-${activePhase.id}`}
               style={{ alignItems: "start" }}
             >
-              {activeCards.map((match) => (
+              {activeCards.map((match) => {
+                const isPlayed = hasMatchAlreadyHappened(match);
+                return (
                 <button
                   key={match.id}
-                  className="match-card bracket-stage-card"
+                  className={`match-card bracket-stage-card${isPlayed ? " match-card-played" : ""}`}
                   type="button"
                   aria-label={`Abrir partida ${match.id}`}
                   style={{ minHeight: 0 }}
@@ -220,11 +222,14 @@ export function BracketHome({
                     </span>
                     {(conflictCountByMatch[match.id] ?? 0) > 0 ? (
                       <span className="conflict-badge">{conflictCountByMatch[match.id]} conflito</span>
+                    ) : isPlayed ? (
+                      <span className="match-card-state">jogo ocorrido</span>
                     ) : null}
                   </div>
                   <p className="bracket-stage-travel">{getTravelLabel(match.id)}</p>
                 </button>
-              ))}
+                );
+              })}
             </div>
           </section>
         </>
@@ -241,10 +246,11 @@ export function BracketHome({
                   }
 
                   const conflictCount = conflictCountByMatch[id] ?? 0;
+                  const isPlayed = hasMatchAlreadyHappened(match);
                   return (
                     <button
                       key={id}
-                      className="match-card"
+                      className={`match-card${isPlayed ? " match-card-played" : ""}`}
                       type="button"
                       aria-label={`Abrir partida ${id}`}
                       onClick={() => onOpenMatch(id)}
@@ -268,6 +274,8 @@ export function BracketHome({
                         </span>
                         {conflictCount > 0 ? (
                           <span className="conflict-badge">{conflictCount} conflito</span>
+                        ) : isPlayed ? (
+                          <span className="match-card-state">jogo ocorrido</span>
                         ) : null}
                       </div>
                     </button>
@@ -289,4 +297,32 @@ function getTravelLabel(matchId: string) {
   if (matchId === "S1" || matchId === "S2") return "Define final e 3º lugar";
   if (matchId === "F") return "Decide o título";
   return "Decide o 3º lugar";
+}
+
+function hasMatchAlreadyHappened(match: KnockoutStageCard) {
+  if (match.homeScore !== null || match.awayScore !== null) {
+    return true;
+  }
+
+  const kickoff = parseKickoffLabel(match.kickoff);
+  if (!kickoff) {
+    return false;
+  }
+
+  return kickoff.getTime() <= Date.now();
+}
+
+function parseKickoffLabel(label: string) {
+  const [datePart, timePart] = label.split("•").map((part) => part.trim());
+  if (!datePart || !timePart) {
+    return null;
+  }
+
+  const [day, month] = datePart.split("/").map(Number);
+  const [hour, minute] = timePart.replace("h", ":").split(":").map(Number);
+  if ([day, month, hour, minute].some((value) => Number.isNaN(value))) {
+    return null;
+  }
+
+  return new Date(2026, month - 1, day, hour, minute);
 }

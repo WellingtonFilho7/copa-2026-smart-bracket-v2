@@ -943,6 +943,31 @@ input {
   box-shadow: 0 8px 0 rgba(48, 76, 207, 0.08);
 }
 
+.match-card-played {
+  border-color: rgba(17, 19, 25, 0.22);
+  background:
+    linear-gradient(180deg, rgba(233, 228, 217, 0.98), rgba(246, 242, 234, 0.98));
+  box-shadow: 0 8px 0 rgba(17, 19, 25, 0.06);
+}
+
+.match-card-played .match-card-time,
+.match-card-played .bracket-stage-travel {
+  color: #5d5549;
+}
+
+.match-card-state {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: rgba(17, 19, 25, 0.08);
+  color: #4d473d;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
 .match-card:hover,
 .primary-button:hover,
 .ghost-button:hover,

@@ -134,4 +134,19 @@ describe("Copa 2026 Smart Bracket UI", () => {
     expect(getComputedStyle(stageList as HTMLElement).alignItems).toBe("start");
     expect(getComputedStyle(stageCard as HTMLElement).minHeight).toMatch(/^0(px)?$/);
   });
+
+  it("marks knockout cards that already happened differently from upcoming matches", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-06-28T20:00:00-03:00"));
+
+    render(<App />);
+
+    const playedMatch = screen.getByRole("button", { name: /^abrir partida k3$/i });
+    const upcomingMatch = screen.getByRole("button", { name: /^abrir partida k1$/i });
+
+    expect(playedMatch).toHaveClass("match-card-played");
+    expect(upcomingMatch).not.toHaveClass("match-card-played");
+
+    vi.useRealTimers();
+  });
 });
