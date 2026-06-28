@@ -179,6 +179,7 @@ export function BracketHome({
           <section
             aria-labelledby={`bracket-tab-${activePhase.id}`}
             className="bracket-stage-panel"
+            data-phase={activePhase.id}
             id={`bracket-panel-${activePhase.id}`}
             role="tabpanel"
           >
@@ -187,7 +188,10 @@ export function BracketHome({
               <p>{activePhase.travelNote}</p>
             </div>
 
-            <div className="bracket-stage-list" style={{ alignItems: "start" }}>
+            <div
+              className={`bracket-stage-list bracket-stage-list-${activePhase.id}`}
+              style={{ alignItems: "start" }}
+            >
               {activeCards.map((match) => (
                 <button
                   key={match.id}
