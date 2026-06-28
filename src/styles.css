@@ -747,6 +747,138 @@ input {
   color: var(--ink-soft);
 }
 
+.bracket-stage-toolbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: end;
+  margin-bottom: 18px;
+  padding: 16px 18px;
+  border-radius: 24px;
+  border: 2px solid rgba(48, 76, 207, 0.14);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(244, 238, 227, 0.98));
+}
+
+.bracket-stage-copy {
+  display: grid;
+  gap: 4px;
+}
+
+.bracket-stage-copy h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 3vw, 2.15rem);
+  text-transform: uppercase;
+  line-height: 0.95;
+}
+
+.bracket-stage-copy p:last-child {
+  margin: 0;
+  max-width: 34rem;
+  color: var(--ink-soft);
+}
+
+.bracket-view-toggle {
+  flex-shrink: 0;
+}
+
+.bracket-phase-nav {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.bracket-phase-tab {
+  display: grid;
+  gap: 4px;
+  justify-items: start;
+  min-height: 76px;
+  padding: 12px 14px;
+  border-radius: 22px;
+  border: 2px solid rgba(48, 76, 207, 0.15);
+  background: rgba(255, 255, 255, 0.86);
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  transition: transform 140ms ease, box-shadow 140ms ease, border-color 140ms ease;
+}
+
+.bracket-phase-tab span {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.bracket-phase-tab small {
+  color: var(--ink-soft);
+  font-size: 0.76rem;
+  text-transform: uppercase;
+}
+
+.bracket-phase-tab.is-active {
+  border-color: var(--album-blue);
+  background: linear-gradient(180deg, rgba(48, 76, 207, 0.95), rgba(39, 61, 169, 0.98));
+  color: #fff;
+  box-shadow: 0 10px 0 rgba(17, 19, 25, 0.08);
+}
+
+.bracket-phase-tab.is-active small {
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.bracket-stage-panel {
+  display: grid;
+  gap: 14px;
+}
+
+.bracket-stage-summary {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: center;
+  padding: 0 4px;
+}
+
+.bracket-stage-summary p {
+  margin: 0;
+  color: var(--ink-soft);
+  text-align: right;
+  font-size: 0.9rem;
+}
+
+.bracket-stage-count {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: rgba(48, 76, 207, 0.1);
+  color: var(--album-blue);
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+}
+
+.bracket-stage-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.bracket-stage-card {
+  min-height: 100%;
+}
+
+.bracket-stage-travel {
+  margin: 10px 0 0;
+  color: var(--ink-soft);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
 .bracket-grid {
   display: grid;
   grid-template-columns: repeat(9, minmax(140px, 1fr));
@@ -788,7 +920,8 @@ input {
 
 .match-card:hover,
 .primary-button:hover,
-.ghost-button:hover {
+.ghost-button:hover,
+.bracket-phase-tab:hover {
   transform: translateY(-1px);
   box-shadow: 0 8px 18px rgba(38, 26, 9, 0.08);
 }
@@ -1267,6 +1400,10 @@ input {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .bracket-phase-nav {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
   .bracket-grid {
     min-width: 0;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1314,6 +1451,16 @@ input {
     padding: 18px;
   }
 
+  .bracket-stage-toolbar,
+  .bracket-stage-summary {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .bracket-stage-summary p {
+    text-align: left;
+  }
+
   .match-hub-header {
     flex-direction: column;
   }
@@ -1330,6 +1477,14 @@ input {
 
   .match-hub-strip {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .bracket-phase-nav {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .bracket-stage-list {
+    grid-template-columns: 1fr;
   }
 
   .match-quick-card {
@@ -1397,6 +1552,23 @@ input {
 
   .section-nav a {
     font-size: 0.78rem;
+  }
+
+  .bracket-stage-toolbar {
+    padding: 14px;
+    border-radius: 18px;
+  }
+
+  .bracket-stage-copy h3 {
+    font-size: 1.35rem;
+  }
+
+  .bracket-phase-nav {
+    grid-template-columns: 1fr;
+  }
+
+  .bracket-phase-tab {
+    min-height: 64px;
   }
 
   .hero-stats {

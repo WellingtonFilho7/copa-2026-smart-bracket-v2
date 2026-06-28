@@ -18,7 +18,8 @@ describe("App shell", () => {
     expect(within(summary).getByText(/placares/i)).toBeInTheDocument();
     expect(within(summary).getByText(/manuais/i)).toBeInTheDocument();
     expect(within(summary).getByText(/da api/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/tabela horizontal do chaveamento/i)).toBeInTheDocument();
+    expect(screen.getByRole("tablist", { name: /fases do chaveamento/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /ver chave completa/i })).toBeInTheDocument();
     expect(document.querySelector(".workspace-primary")).toHaveAttribute("id", "chave");
     expect(document.querySelector(".workspace-sidebar")).toHaveAttribute("id", "conflitos");
     expect(screen.getByRole("heading", { name: /grupos classificados/i })).toBeInTheDocument();

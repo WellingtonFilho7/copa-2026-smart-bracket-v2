@@ -80,4 +80,29 @@ describe("Copa 2026 Smart Bracket UI", () => {
     await user.tab({ shift: true });
     expect(structureButton).toHaveFocus();
   });
+
+  it("shows the bracket in phase mode by default and reveals the full tree on demand", async () => {
+    const user = userEvent.setup();
+
+    render(<App />);
+
+    expect(screen.getByRole("tab", { name: /32 avos/i })).toHaveAttribute("aria-selected", "true");
+    expect(screen.getByRole("button", { name: /^abrir partida k1$/i })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /^abrir partida o1$/i })).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole("tab", { name: /quartas/i }));
+
+    expect(screen.getByRole("tab", { name: /quartas/i })).toHaveAttribute("aria-selected", "true");
+    expect(screen.getByRole("button", { name: /^abrir partida q1$/i })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /^abrir partida k1$/i })).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: /ver chave completa/i }));
+
+    expect(screen.getByRole("button", { name: /^abrir partida k1$/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /^abrir partida o1$/i })).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: /voltar para fases/i }));
+
+    expect(screen.queryByRole("button", { name: /^abrir partida o1$/i })).not.toBeInTheDocument();
+  });
 });
