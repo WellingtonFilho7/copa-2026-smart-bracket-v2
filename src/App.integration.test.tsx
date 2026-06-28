@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 
 import App from "./App";
 import { ConflictPanel } from "./components/ConflictPanel";
+import "./styles.css";
 
 describe("Copa 2026 Smart Bracket UI", () => {
   it("uses neutral summary copy when there are no open conflicts", () => {
@@ -104,5 +105,33 @@ describe("Copa 2026 Smart Bracket UI", () => {
     await user.click(screen.getByRole("button", { name: /voltar para fases/i }));
 
     expect(screen.queryByRole("button", { name: /^abrir partida o1$/i })).not.toBeInTheDocument();
+  });
+
+  it("supports arrow navigation across bracket phases", async () => {
+    const user = userEvent.setup();
+
+    render(<App />);
+
+    const round32Tab = screen.getByRole("tab", { name: /32 avos/i });
+    round32Tab.focus();
+
+    await user.keyboard("{ArrowRight}");
+
+    const round16Tab = screen.getByRole("tab", { name: /oitavas/i });
+    expect(round16Tab).toHaveFocus();
+    expect(round16Tab).toHaveAttribute("aria-selected", "true");
+    expect(screen.getByRole("button", { name: /^abrir partida o1$/i })).toBeInTheDocument();
+  });
+
+  it("keeps phase cards at their natural height instead of stretching every row", () => {
+    render(<App />);
+
+    const stageList = document.querySelector(".bracket-stage-list");
+    const stageCard = document.querySelector(".bracket-stage-card");
+
+    expect(stageList).not.toBeNull();
+    expect(stageCard).not.toBeNull();
+    expect(getComputedStyle(stageList as HTMLElement).alignItems).toBe("start");
+    expect(getComputedStyle(stageCard as HTMLElement).minHeight).toMatch(/^0(px)?$/);
   });
 });

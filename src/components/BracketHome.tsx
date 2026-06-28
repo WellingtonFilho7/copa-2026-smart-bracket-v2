@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import type { KeyboardEvent as ReactKeyboardEvent } from "react";
 
 import type { KnockoutStageCard } from "../App";
 
@@ -85,6 +86,46 @@ export function BracketHome({
     .map((id) => matches[id])
     .filter((match): match is KnockoutStageCard => Boolean(match));
 
+  function focusPhaseTab(phaseId: string) {
+    document.getElementById(`bracket-tab-${phaseId}`)?.focus();
+  }
+
+  function activatePhaseByOffset(offset: number) {
+    const currentIndex = phaseGroups.findIndex((phase) => phase.id === activePhase.id);
+    const nextIndex = (currentIndex + offset + phaseGroups.length) % phaseGroups.length;
+    const nextPhase = phaseGroups[nextIndex];
+    setActivePhaseId(nextPhase.id);
+    focusPhaseTab(nextPhase.id);
+  }
+
+  function handlePhaseKeyDown(event: ReactKeyboardEvent<HTMLButtonElement>) {
+    if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+      event.preventDefault();
+      activatePhaseByOffset(1);
+      return;
+    }
+
+    if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+      event.preventDefault();
+      activatePhaseByOffset(-1);
+      return;
+    }
+
+    if (event.key === "Home") {
+      event.preventDefault();
+      setActivePhaseId(phaseGroups[0].id);
+      focusPhaseTab(phaseGroups[0].id);
+      return;
+    }
+
+    if (event.key === "End") {
+      event.preventDefault();
+      const lastPhase = phaseGroups[phaseGroups.length - 1];
+      setActivePhaseId(lastPhase.id);
+      focusPhaseTab(lastPhase.id);
+    }
+  }
+
   return (
     <section className="bracket-shell">
       <div className="bracket-header">
@@ -126,6 +167,7 @@ export function BracketHome({
                   tabIndex={isActive ? 0 : -1}
                   type="button"
                   onClick={() => setActivePhaseId(phase.id)}
+                  onKeyDown={handlePhaseKeyDown}
                 >
                   <span>{phase.label}</span>
                   <small>{phase.ids.length} jogos</small>
@@ -145,13 +187,14 @@ export function BracketHome({
               <p>{activePhase.travelNote}</p>
             </div>
 
-            <div className="bracket-stage-list">
+            <div className="bracket-stage-list" style={{ alignItems: "start" }}>
               {activeCards.map((match) => (
                 <button
                   key={match.id}
                   className="match-card bracket-stage-card"
                   type="button"
                   aria-label={`Abrir partida ${match.id}`}
+                  style={{ minHeight: 0 }}
                   onClick={() => onOpenMatch(match.id)}
                 >
                   <div className="match-card-meta">
