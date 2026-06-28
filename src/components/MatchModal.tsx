@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import type { KnockoutMatchView } from "../lib/types";
 import type { MatchConflict } from "../lib/workspace/schema";
@@ -29,11 +29,35 @@ export function MatchModal({
   const [homeScore, setHomeScore] = useState("");
   const [awayScore, setAwayScore] = useState("");
   const [showStructure, setShowStructure] = useState(false);
+  const dialogRef = useRef<HTMLElement>(null);
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
 
   useEffect(() => {
     setHomeScore(initialHomeScore === null ? "" : String(initialHomeScore));
     setAwayScore(initialAwayScore === null ? "" : String(initialAwayScore));
   }, [initialAwayScore, initialHomeScore, match?.id]);
+
+  // Close on Escape and manage focus (move into the dialog, restore on close).
+  useEffect(() => {
+    if (!match) {
+      return;
+    }
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+    dialogRef.current?.focus();
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        onCloseRef.current();
+      }
+    }
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      previouslyFocused?.focus?.();
+    };
+  }, [match?.id]);
 
   if (!match) {
     return null;
@@ -42,10 +66,12 @@ export function MatchModal({
   return (
     <div className="modal-backdrop" role="presentation" onClick={onClose}>
       <section
+        ref={dialogRef}
         aria-label={`Partida ${match.id}`}
         aria-modal="true"
         className="match-modal"
         role="dialog"
+        tabIndex={-1}
         onClick={(event) => event.stopPropagation()}
       >
         <header className="match-modal-header">
@@ -68,16 +94,21 @@ export function MatchModal({
               aria-label="Placar casa"
               inputMode="numeric"
               pattern="[0-9]*"
+              placeholder="0"
               value={homeScore}
               onChange={(event) => setHomeScore(event.target.value)}
             />
           </label>
+          <span className="modal-score-x" aria-hidden="true">
+            ×
+          </span>
           <label>
             <span className="sr-only">Placar fora</span>
             <input
               aria-label="Placar fora"
               inputMode="numeric"
               pattern="[0-9]*"
+              placeholder="0"
               value={awayScore}
               onChange={(event) => setAwayScore(event.target.value)}
             />

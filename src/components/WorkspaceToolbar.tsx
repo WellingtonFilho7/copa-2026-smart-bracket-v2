@@ -3,6 +3,7 @@ type WorkspaceToolbarProps = {
   onExport: () => void;
   onImportClick: () => void;
   lastSyncLabel: string;
+  syncState?: "idle" | "pending" | "error";
 };
 
 export function WorkspaceToolbar({
@@ -10,7 +11,10 @@ export function WorkspaceToolbar({
   onExport,
   onImportClick,
   lastSyncLabel,
+  syncState = "idle",
 }: WorkspaceToolbarProps) {
+  const isPending = syncState === "pending";
+
   return (
     <div className="toolbar">
       <div className="toolbar-copy">
@@ -23,10 +27,21 @@ export function WorkspaceToolbar({
           <span className="toolbar-sync-dot" aria-hidden="true" />
           Última sync: {lastSyncLabel}
         </p>
+        {syncState === "error" ? (
+          <p className="toolbar-error" role="alert">
+            Não foi possível buscar o feed. Verifique a conexão e tente novamente.
+          </p>
+        ) : null}
       </div>
       <div className="toolbar-row">
-        <button className="primary-button" type="button" onClick={onSync}>
-          Buscar feed
+        <button
+          className="primary-button"
+          type="button"
+          onClick={onSync}
+          disabled={isPending}
+          aria-busy={isPending}
+        >
+          {isPending ? "Buscando…" : "Buscar feed"}
         </button>
         <button className="ghost-button" type="button" onClick={onExport}>
           Exportar JSON
