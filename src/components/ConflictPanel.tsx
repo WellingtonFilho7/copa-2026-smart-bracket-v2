@@ -5,6 +5,7 @@ type ConflictPanelProps = {
 };
 
 export function ConflictPanel({ conflicts }: ConflictPanelProps) {
+  const hasConflicts = conflicts.length > 0;
   const summaryCopy =
     conflicts.length === 0
       ? "Nenhum conflito aberto"
@@ -13,7 +14,9 @@ export function ConflictPanel({ conflicts }: ConflictPanelProps) {
         : `${conflicts.length} conflitos abertos`;
 
   return (
-    <aside className="conflict-panel">
+    <aside
+      className={`conflict-panel ${hasConflicts ? "conflict-panel-alert" : "conflict-panel-empty"}`}
+    >
       <div className="conflict-panel-header">
         <div>
           <p className="eyebrow conflict-kicker">Revisão editorial</p>
