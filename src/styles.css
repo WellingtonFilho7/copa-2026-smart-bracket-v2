@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Anton&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,700;9..144,800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700;800&display=swap");
 
 :root {
   color-scheme: light;
@@ -25,8 +25,9 @@
   --warn: #d34c14;
   --ink-strong: #0a0c11;
   --ink-soft: #1d2330;
-  --paper-contrast: rgba(255, 250, 243, 0.94);
-  font-family: "Fraunces", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  --font-body: "Archivo", "Avenir Next", "Helvetica Neue", Arial, sans-serif;
+  --font-display: "Anton", "Arial Narrow", "Avenir Next Condensed", "Helvetica Neue Condensed", sans-serif;
+  font-family: var(--font-body);
   background: var(--paper);
   color: var(--ink);
 }
@@ -128,7 +129,7 @@ input {
   padding: 9px 13px;
   font-size: 0.84rem;
   font-weight: 700;
-  font-family: "Anton", "Arial Narrow", sans-serif;
+  font-family: var(--font-display);
   text-transform: uppercase;
   box-shadow: 0 8px 0 rgba(17, 19, 25, 0.08);
 }
@@ -165,11 +166,10 @@ input {
 
 .hero h1,
 .bracket-header h2 {
-  font-family: "Anton", "Arial Narrow", "Avenir Next Condensed", "Helvetica Neue Condensed", sans-serif;
+  font-family: var(--font-display);
   text-transform: uppercase;
   margin: 0;
 }
-
 .hero-copy {
   position: relative;
   z-index: 1;
@@ -197,7 +197,7 @@ input {
   border-radius: 999px;
   background: rgba(10, 12, 17, 0.94);
   color: #fff;
-  font-family: "Anton", "Arial Narrow", sans-serif;
+  font-family: var(--font-display);
   font-size: 0.84rem;
   text-transform: uppercase;
 }
@@ -226,7 +226,6 @@ input {
 
 .hero-lead {
   margin: 0;
-  max-width: 36rem;
   color: rgba(255, 255, 255, 0.98);
   font-size: 1.08rem;
   line-height: 1.58;
@@ -288,7 +287,7 @@ input {
 }
 
 .hero-stat strong {
-  font-family: "Anton", "Arial Narrow", "Avenir Next Condensed", "Helvetica Neue Condensed", sans-serif;
+  font-family: var(--font-display);
   font-size: 1.9rem;
   line-height: 1;
   color: #fff;
@@ -465,7 +464,7 @@ input {
 .section-heading h2,
 .conflict-panel h3 {
   margin: 0;
-  font-family: "Anton", "Arial Narrow", "Avenir Next Condensed", "Helvetica Neue Condensed", sans-serif;
+  font-family: var(--font-display);
   text-transform: uppercase;
 }
 
@@ -524,7 +523,7 @@ input {
 
 .match-hub-header h2 {
   margin: 0 0 6px;
-  font-family: "Arial Narrow", "Avenir Next Condensed", "Helvetica Neue Condensed", sans-serif;
+  font-family: var(--font-display);
   text-transform: uppercase;
   color: var(--ink);
 }
@@ -558,7 +557,7 @@ input {
 
 .match-metric strong {
   display: block;
-  font-family: "Anton", "Arial Narrow", sans-serif;
+  font-family: var(--font-display);
   font-size: 1.55rem;
   line-height: 1;
   font-variant-numeric: tabular-nums;
@@ -612,7 +611,7 @@ input {
 
 .match-quick-card h3 {
   margin: 0;
-  font-family: "Anton", "Arial Narrow", sans-serif;
+  font-family: var(--font-display);
   font-size: 1.35rem;
   text-transform: uppercase;
   color: var(--ink);
@@ -624,7 +623,7 @@ input {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-family: "Anton", "Arial Narrow", "Avenir Next Condensed", "Helvetica Neue Condensed", sans-serif;
+  font-family: var(--font-display);
   font-size: clamp(2rem, 6vw, 3rem);
   font-weight: 700;
   line-height: 1;
@@ -703,7 +702,7 @@ input {
   position: absolute;
   right: 12px;
   bottom: -6px;
-  font-family: "Anton", "Arial Narrow", sans-serif;
+  font-family: var(--font-display);
   font-size: 3.2rem;
   line-height: 1;
   color: rgba(255, 255, 255, 0.14);
@@ -733,7 +732,7 @@ input {
 .group-card-header h3 {
   margin: 0;
   text-transform: uppercase;
-  font-family: "Anton", "Arial Narrow", sans-serif;
+  font-family: var(--font-display);
   font-size: 1.45rem;
   line-height: 1;
   color: #fff;
@@ -817,7 +816,7 @@ input {
   padding: 8px 10px;
   border-radius: 999px;
   background: var(--album-blue);
-  font-family: "Anton", "Arial Narrow", sans-serif;
+  font-family: var(--font-display);
 }
 
 .match-card {
@@ -861,7 +860,7 @@ input {
   border-radius: 999px;
   background: var(--album-red);
   color: #fff;
-  font-family: "Anton", "Arial Narrow", sans-serif;
+  font-family: var(--font-display);
   font-weight: 700;
 }
 
@@ -890,7 +889,7 @@ input {
   border-radius: 999px;
   background: rgba(48, 76, 207, 0.08);
   color: var(--ink);
-  font-family: "Anton", "Arial Narrow", "Avenir Next Condensed", "Helvetica Neue Condensed", sans-serif;
+  font-family: var(--font-display);
   font-size: 1.15rem;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
@@ -993,7 +992,7 @@ input {
 
 .match-modal h2 {
   color: var(--ink);
-  font-family: "Anton", "Arial Narrow", sans-serif;
+  font-family: var(--font-display);
   font-size: clamp(2rem, 5vw, 3rem);
   line-height: 0.95;
 }
@@ -1141,7 +1140,7 @@ input {
   border-radius: 999px;
   background: var(--album-red);
   color: #fff;
-  font-family: "Anton", "Arial Narrow", "Avenir Next Condensed", "Helvetica Neue Condensed", sans-serif;
+  font-family: var(--font-display);
   font-size: 1.4rem;
   font-variant-numeric: tabular-nums;
 }
