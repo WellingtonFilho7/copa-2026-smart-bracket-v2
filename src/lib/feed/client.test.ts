@@ -1,20 +1,17 @@
-import { fetchFeedMatches } from "./client";
+import { officialFeedFixture } from "../../test/fixtures/official-feed";
+import { fetchOfficialFeed } from "./client";
 
 describe("feed client", () => {
-  it("returns normalized matches from the backend payload", async () => {
+  it("returns the normalized official payload from the backend", async () => {
     vi.stubGlobal(
       "fetch",
       vi.fn().mockResolvedValue({
         ok: true,
-        json: async () => ({
-          matches: [{ id: "GC5", homeScore: 2, awayScore: 1, status: "finished" }],
-        }),
+        json: async () => officialFeedFixture,
       }),
     );
 
-    await expect(fetchFeedMatches()).resolves.toEqual([
-      { id: "GC5", homeScore: 2, awayScore: 1, status: "finished" },
-    ]);
+    await expect(fetchOfficialFeed()).resolves.toEqual(officialFeedFixture);
   });
 
   it("throws on non-ok responses", async () => {
@@ -26,6 +23,6 @@ describe("feed client", () => {
       }),
     );
 
-    await expect(fetchFeedMatches()).rejects.toThrow(/502/);
+    await expect(fetchOfficialFeed()).rejects.toThrow(/502/);
   });
 });

@@ -1,161 +1,61 @@
-import { useMemo, useRef, useState } from "react";
-import type { ChangeEvent } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { BracketHome } from "./components/BracketHome";
-import { ConflictPanel } from "./components/ConflictPanel";
 import { GroupCards } from "./components/GroupCards";
 import { MatchHub } from "./components/MatchHub";
 import { MatchModal } from "./components/MatchModal";
 import { WorkspaceToolbar } from "./components/WorkspaceToolbar";
-import { fetchFeedMatches } from "./lib/feed/client";
-import { TOURNAMENT_BASE } from "./lib/tournament/base-data";
-import {
-  assignThirdPlaceSlots,
-  buildKnockoutMatches,
-  computeGroupStandings,
-  rankThirdPlaceTeams,
-} from "./lib/tournament/engine";
-import type { GroupMatch, KnockoutMatchView } from "./lib/types";
-import {
-  acceptFeedValue,
-  applyManualScore,
-  createInitialWorkspace,
-  exportWorkspace,
-  importWorkspace,
-  keepManualValue,
-  mergeFeedMatches,
-  resolveMatchScore,
-} from "./lib/workspace/reducer";
-import { loadWorkspace, saveWorkspace } from "./lib/workspace/storage";
-
-const STAGE_ORDER = [
-  "K1",
-  "K2",
-  "K3",
-  "K4",
-  "K5",
-  "K6",
-  "K7",
-  "K8",
-  "K9",
-  "K10",
-  "K11",
-  "K12",
-  "K13",
-  "K14",
-  "K15",
-  "K16",
-  "O1",
-  "O2",
-  "O3",
-  "O4",
-  "O5",
-  "O6",
-  "O7",
-  "O8",
-  "Q1",
-  "Q2",
-  "Q3",
-  "Q4",
-  "S1",
-  "S2",
-  "F",
-  "T",
-];
+import { fetchOfficialFeed } from "./lib/feed/client";
+import type { OfficialFeedPayload, OfficialMatch } from "./lib/feed/schema";
+import { loadCachedFeed, saveCachedFeed } from "./lib/workspace/storage";
 
 export default function App() {
-  const [workspace, setWorkspace] = useState(() => loadWorkspace() ?? createInitialWorkspace(TOURNAMENT_BASE));
+  const [data, setData] = useState<OfficialFeedPayload | null>(() => loadCachedFeed());
   const [selectedMatchId, setSelectedMatchId] = useState<string | null>(null);
   const [syncState, setSyncState] = useState<"idle" | "pending" | "error">("idle");
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isStale, setIsStale] = useState(false);
 
-  const groupMatches = useMemo(
-    () =>
-      workspace.tournament.groupMatches.map((match) => {
-        const resolved = resolveMatchScore(workspace, match.id);
-        return {
-          ...match,
-          homeScore: resolved.homeScore,
-          awayScore: resolved.awayScore,
-        };
-      }),
-    [workspace],
+  const matchesById = useMemo(
+    () => Object.fromEntries((data?.matches ?? []).map((match) => [match.id, match])),
+    [data],
   );
-
-  const standings = useMemo(
-    () => computeGroupStandings(workspace.tournament.teams, groupMatches as GroupMatch[]),
-    [groupMatches, workspace.tournament.teams],
-  );
-  const rankedThirds = useMemo(() => rankThirdPlaceTeams(standings).slice(0, 8), [standings]);
-  const thirdPlaceSlots = useMemo(() => assignThirdPlaceSlots(rankedThirds), [rankedThirds]);
+  const selectedMatch = selectedMatchId ? matchesById[selectedMatchId] ?? null : null;
   const knockoutMatches = useMemo(
-    () => buildKnockoutMatches(standings, thirdPlaceSlots, workspace.tournament.knockoutMatches),
-    [standings, thirdPlaceSlots, workspace.tournament.knockoutMatches],
+    () => (data?.matches ?? []).filter((match) => match.roundKey !== undefined),
+    [data],
   );
-  const selectedMatch = selectedMatchId ? knockoutMatches[selectedMatchId] ?? null : null;
-  const selectedScore = selectedMatchId
-    ? resolveMatchScore(workspace, selectedMatchId)
-    : { source: "base" as const, homeScore: null, awayScore: null };
+  const featuredMatches = useMemo(() => {
+    if (!data) {
+      return [];
+    }
 
-  const conflictEntries = Object.values(workspace.conflicts).filter((value) => value !== undefined);
-  const conflictCountByMatch = Object.fromEntries(conflictEntries.map((conflict) => [conflict.matchId, 1]));
-  const stageMatches = useMemo(() => pickStageMatches(knockoutMatches), [knockoutMatches]);
-  const stageCards = useMemo(() => buildStageCards(stageMatches, workspace), [stageMatches, workspace]);
-  const quickMatches = useMemo(() => Object.values(stageCards), [stageCards]);
-  const filledMatchCount = quickMatches.filter(
-    (match) => match.homeScore !== null || match.awayScore !== null,
-  ).length;
-  const manualMatchCount = quickMatches.filter((match) => match.source === "manual").length;
-  const feedMatchCount = quickMatches.filter((match) => match.source === "feed").length;
+    return data.bracket.round32
+      .map((id) => matchesById[id])
+      .filter((match): match is OfficialMatch => Boolean(match));
+  }, [data, matchesById]);
 
-  function commitWorkspace(nextWorkspace: typeof workspace) {
-    setWorkspace(nextWorkspace);
-    saveWorkspace(nextWorkspace);
-  }
+  const finishedCount = knockoutMatches.filter((match) => match.status === "finished").length;
+  const liveCount = knockoutMatches.filter((match) => match.status === "live").length;
+  const scheduledCount = knockoutMatches.filter((match) => match.status === "scheduled").length;
+
+  useEffect(() => {
+    void handleSync();
+    // Intentionally sync once on mount; local cache keeps the shell populated between visits.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   async function handleSync() {
     setSyncState("pending");
     try {
-      const feedMatches = await fetchFeedMatches();
-      const nextWorkspace = mergeFeedMatches(workspace, feedMatches);
-      commitWorkspace(nextWorkspace);
+      const nextData = await fetchOfficialFeed();
+      setData(nextData);
+      saveCachedFeed(nextData);
       setSyncState("idle");
+      setIsStale(false);
     } catch {
       setSyncState("error");
+      setIsStale(Boolean(data));
     }
-  }
-
-  function handleSaveScore(homeScore: number | null, awayScore: number | null) {
-    if (!selectedMatchId) {
-      return;
-    }
-    commitWorkspace(applyManualScore(workspace, selectedMatchId, homeScore, awayScore));
-  }
-
-  function handleExport() {
-    const blob = new Blob([exportWorkspace(workspace)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const anchor = document.createElement("a");
-    anchor.href = url;
-    anchor.download = "copa-2026-smart-bracket-workspace.json";
-    anchor.click();
-    URL.revokeObjectURL(url);
-  }
-
-  function handleImportClick() {
-    fileInputRef.current?.click();
-  }
-
-  async function handleImport(event: ChangeEvent<HTMLInputElement>) {
-    const file = event.target.files?.[0];
-    if (!file) {
-      return;
-    }
-
-    const text = await file.text();
-    const imported = importWorkspace(text);
-    commitWorkspace(imported);
-    event.target.value = "";
   }
 
   return (
@@ -165,129 +65,106 @@ export default function App() {
       </a>
       <header className="hero">
         <div className="hero-copy">
-          <p className="eyebrow hero-kicker">Copa do Mundo 2026 • pôster interativo</p>
+          <p className="eyebrow hero-kicker">Copa do Mundo 2026 • tracker oficial</p>
           <h1>
             Copa 2026
-            <span>Smart Bracket</span>
+            <span>Official Bracket</span>
           </h1>
           <p className="hero-lead">
-            Acompanhe a chave, edite placares manualmente e compartilhe o mesmo estado com seus
-            amigos — sem login nem complicação.
+            Acompanhe a chave e os grupos com uma única fonte oficial normalizada, sem edição
+            manual e sem dados locais competindo com o placar real.
           </p>
           <div className="hero-stats" aria-label="Resumo da home">
             <div className="hero-stat">
-              <strong>{filledMatchCount}</strong>
-              <span>placares</span>
+              <strong>{finishedCount}</strong>
+              <span>encerradas</span>
             </div>
             <div className="hero-stat">
-              <strong>{manualMatchCount}</strong>
-              <span>manuais</span>
+              <strong>{scheduledCount}</strong>
+              <span>agendadas</span>
             </div>
             <div className="hero-stat">
-              <strong>{feedMatchCount}</strong>
-              <span>da API</span>
+              <strong>{liveCount}</strong>
+              <span>ao vivo</span>
             </div>
           </div>
         </div>
       </header>
 
       <WorkspaceToolbar
-        lastSyncLabel={workspace.meta.lastSyncAt ?? "ainda não sincronizado"}
+        lastSyncLabel={formatTimestamp(data?.meta.syncedAt)}
+        upstreamLabel={formatTimestamp(data?.meta.upstreamUpdatedAt)}
         syncState={syncState}
-        onExport={handleExport}
-        onImportClick={handleImportClick}
+        isStale={isStale}
         onSync={() => {
           void handleSync();
         }}
       />
-      <input ref={fileInputRef} hidden type="file" accept="application/json" onChange={(event) => void handleImport(event)} />
 
       <nav className="section-nav" aria-label="Navegação da página">
         <a href="#partidas">Partidas</a>
         <a href="#grupos">Grupos</a>
         <a href="#chave">Chave</a>
-        <a href="#conflitos">Conflitos</a>
       </nav>
 
-      <MatchHub matches={quickMatches} conflictCount={conflictEntries.length} onOpenMatch={setSelectedMatchId} />
-
-      <section className="section-block" id="grupos">
-        <div className="section-heading">
-          <div>
-            <p className="eyebrow">Mapa do torneio</p>
-            <h2>Grupos classificados</h2>
+      {!data ? (
+        <section className="section-block">
+          <div className="section-heading">
+            <div>
+              <p className="eyebrow">Sincronização inicial</p>
+              <h2>Carregando dados oficiais</h2>
+            </div>
+            <p className="section-note">
+              {syncState === "error"
+                ? "A fonte oficial não respondeu. Tente atualizar novamente."
+                : "Buscando o snapshot oficial do torneio."}
+            </p>
           </div>
-          <p className="section-note">Doze blocos cromáticos alimentando a árvore final.</p>
-        </div>
-        <GroupCards teams={workspace.tournament.teams} />
-      </section>
+        </section>
+      ) : (
+        <>
+          <MatchHub matches={featuredMatches} onOpenMatch={setSelectedMatchId} />
 
-      <section className="workspace-grid">
-        <div className="workspace-primary" id="chave">
-          <BracketHome
-            matches={stageCards}
-            conflictCountByMatch={conflictCountByMatch}
-            onOpenMatch={setSelectedMatchId}
-          />
-        </div>
-        <div className="workspace-sidebar" id="conflitos">
-          <ConflictPanel conflicts={conflictEntries} />
-        </div>
-      </section>
+          <section className="section-block" id="grupos">
+            <div className="section-heading">
+              <div>
+                <p className="eyebrow">Tabela oficial</p>
+                <h2>Classificação dos grupos</h2>
+              </div>
+              <p className="section-note">
+                Doze grupos ordenados por pontos, jogos e saldo, sem ranking inventado no cliente.
+              </p>
+            </div>
+            <GroupCards groups={data.groups} />
+          </section>
 
-      <MatchModal
-        match={selectedMatch}
-        sourceLabel={selectedScore.source}
-        initialHomeScore={selectedScore.homeScore}
-        initialAwayScore={selectedScore.awayScore}
-        conflict={selectedMatchId ? workspace.conflicts[selectedMatchId] : undefined}
-        onAcceptFeed={() => {
-          if (!selectedMatchId) return;
-          commitWorkspace(acceptFeedValue(workspace, selectedMatchId));
-        }}
-        onClose={() => setSelectedMatchId(null)}
-        onKeepManual={() => {
-          if (!selectedMatchId) return;
-          commitWorkspace(keepManualValue(workspace, selectedMatchId));
-        }}
-        onSaveScore={handleSaveScore}
-      />
+          <section className="workspace-grid workspace-grid-single">
+            <div className="workspace-primary" id="chave">
+              <BracketHome matches={matchesById} bracket={data.bracket} onOpenMatch={setSelectedMatchId} />
+            </div>
+          </section>
+        </>
+      )}
+
+      <MatchModal match={selectedMatch} onClose={() => setSelectedMatchId(null)} />
     </main>
   );
 }
 
-function pickStageMatches(matches: Record<string, ReturnType<typeof buildKnockoutMatches>[string]>) {
-  return STAGE_ORDER.reduce<Record<string, KnockoutMatchView>>((accumulator, id) => {
-    const match = matches[id];
-    if (match) {
-      accumulator[id] = match;
-    }
-    return accumulator;
-  }, {});
+function formatTimestamp(value: string | undefined) {
+  if (!value) {
+    return "ainda não sincronizado";
+  }
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+
+  return new Intl.DateTimeFormat("pt-BR", {
+    day: "2-digit",
+    month: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(date);
 }
-
-function buildStageCards(
-  matches: Record<string, KnockoutMatchView>,
-  workspace: ReturnType<typeof createInitialWorkspace>,
-) {
-  return Object.values(matches).reduce<Record<string, KnockoutStageCard>>((accumulator, match) => {
-    const score = resolveMatchScore(workspace, match.id);
-
-    accumulator[match.id] = {
-      ...match,
-      homeScore: score.homeScore,
-      awayScore: score.awayScore,
-      source: score.source,
-      hasConflict: Boolean(workspace.conflicts[match.id]),
-    };
-
-    return accumulator;
-  }, {});
-}
-
-export type KnockoutStageCard = KnockoutMatchView & {
-  homeScore: number | null;
-  awayScore: number | null;
-  source: "manual" | "feed" | "base";
-  hasConflict: boolean;
-};

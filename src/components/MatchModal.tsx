@@ -1,48 +1,29 @@
 import { useEffect, useRef, useState } from "react";
 
-import type { KnockoutMatchView } from "../lib/types";
-import type { MatchConflict } from "../lib/workspace/schema";
+import type { OfficialMatch } from "../lib/feed/schema";
 
 type MatchModalProps = {
-  match: KnockoutMatchView | null;
-  sourceLabel: string;
-  initialHomeScore: number | null;
-  initialAwayScore: number | null;
-  conflict?: MatchConflict;
+  match: OfficialMatch | null;
   onClose: () => void;
-  onSaveScore: (homeScore: number | null, awayScore: number | null) => void;
-  onAcceptFeed: () => void;
-  onKeepManual: () => void;
 };
 
-export function MatchModal({
-  match,
-  sourceLabel,
-  initialHomeScore,
-  initialAwayScore,
-  conflict,
-  onClose,
-  onSaveScore,
-  onAcceptFeed,
-  onKeepManual,
-}: MatchModalProps) {
-  const [homeScore, setHomeScore] = useState("");
-  const [awayScore, setAwayScore] = useState("");
+function getStatusCopy(status: OfficialMatch["status"]) {
+  if (status === "finished") return "Encerrado";
+  if (status === "live") return "Ao vivo";
+  return "Agendado";
+}
+
+export function MatchModal({ match, onClose }: MatchModalProps) {
   const [showStructure, setShowStructure] = useState(false);
   const dialogRef = useRef<HTMLElement>(null);
   const onCloseRef = useRef(onClose);
   onCloseRef.current = onClose;
 
   useEffect(() => {
-    setHomeScore(initialHomeScore === null ? "" : String(initialHomeScore));
-    setAwayScore(initialAwayScore === null ? "" : String(initialAwayScore));
-  }, [initialAwayScore, initialHomeScore, match?.id]);
-
-  // Close on Escape and manage focus (move into the dialog, restore on close).
-  useEffect(() => {
     if (!match) {
       return;
     }
+
     const previouslyFocused = document.activeElement as HTMLElement | null;
     dialogRef.current?.focus();
 
@@ -78,8 +59,8 @@ export function MatchModal({
         first.focus();
       }
     }
-    document.addEventListener("keydown", handleKeyDown);
 
+    document.addEventListener("keydown", handleKeyDown);
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
       previouslyFocused?.focus?.();
@@ -105,7 +86,7 @@ export function MatchModal({
           <div>
             <p className="eyebrow modal-kicker">{match.stage}</p>
             <h2>Partida {match.id}</h2>
-            <p className="modal-kickoff">{match.kickoff}</p>
+            <p className="modal-kickoff">{match.kickoffLabel}</p>
           </div>
           <button className="ghost-button" type="button" onClick={onClose}>
             Fechar
@@ -115,68 +96,22 @@ export function MatchModal({
         <div className="modal-score-shell">
           <div className="modal-score-grid">
             <div className="team-name team-home">{match.homeTeam}</div>
-            <label className="score-field home-score-field">
-              <span className="sr-only">Placar casa</span>
-              <input
-                aria-label="Placar casa"
-                inputMode="numeric"
-                pattern="[0-9]*"
-                placeholder="0"
-                value={homeScore}
-                onChange={(event) => setHomeScore(event.target.value)}
-              />
-            </label>
+            <div className="score-field home-score-field modal-score-readonly">
+              <span>{match.homeScore ?? "-"}</span>
+            </div>
             <span className="modal-score-x" aria-hidden="true">
               ×
             </span>
-            <label className="score-field away-score-field">
-              <span className="sr-only">Placar fora</span>
-              <input
-                aria-label="Placar fora"
-                inputMode="numeric"
-                pattern="[0-9]*"
-                placeholder="0"
-                value={awayScore}
-                onChange={(event) => setAwayScore(event.target.value)}
-              />
-            </label>
+            <div className="score-field away-score-field modal-score-readonly">
+              <span>{match.awayScore ?? "-"}</span>
+            </div>
             <div className="team-name team-away">{match.awayTeam}</div>
           </div>
         </div>
 
-        <div className="source-line modal-source">Fonte atual: {sourceLabel}</div>
+        <div className="source-line modal-source">Fonte atual: oficial</div>
+        <div className="source-line modal-source">Status: {getStatusCopy(match.status)}</div>
 
-        {conflict ? (
-          <div className="conflict-callout">
-            <strong>Conflito detectado</strong>
-            <p>
-              API sugeriu {conflict.externalValue.homeScore} x {conflict.externalValue.awayScore}
-            </p>
-            <div className="toolbar-row">
-              <button className="primary-button" type="button" onClick={onKeepManual}>
-                Manter manual
-              </button>
-              <button className="ghost-button" type="button" onClick={onAcceptFeed}>
-                Aceitar API
-              </button>
-            </div>
-          </div>
-        ) : null}
-
-        <div className="toolbar-row modal-actions">
-          <button
-            className="primary-button"
-            type="button"
-            onClick={() =>
-              onSaveScore(
-                homeScore === "" ? null : Number(homeScore),
-                awayScore === "" ? null : Number(awayScore),
-              )
-            }
-          >
-            Salvar placar
-          </button>
-        </div>
         <div className="modal-utility-row">
           <button
             className="ghost-button"
@@ -189,9 +124,9 @@ export function MatchModal({
 
         {showStructure ? (
           <div className="structure-panel">
-            <p>Home slot: {match.homeSlot}</p>
-            <p>Away slot: {match.awaySlot}</p>
-            <p>Vencedor propaga para: {match.nextMatchId ?? "fim da chave"}</p>
+            <p>Fase: {match.stage}</p>
+            <p>Próximo jogo: {match.nextMatchId ?? "fim da chave"}</p>
+            <p>Vencedor oficial: {match.winnerTeam ?? "a definir"}</p>
           </div>
         ) : null}
       </section>

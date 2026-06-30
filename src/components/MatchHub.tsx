@@ -1,55 +1,45 @@
-type MatchHubEntry = {
-  id: string;
-  stage: string;
-  kickoff: string;
-  homeTeam: string;
-  awayTeam: string;
-  homeScore: number | null;
-  awayScore: number | null;
-  source: "manual" | "feed" | "base";
-  hasConflict: boolean;
-};
+import type { OfficialMatch } from "../lib/feed/schema";
 
 type MatchHubProps = {
-  matches: MatchHubEntry[];
-  conflictCount: number;
+  matches: OfficialMatch[];
   onOpenMatch: (matchId: string) => void;
 };
 
-const sourceCopy: Record<MatchHubEntry["source"], string> = {
-  manual: "manual",
-  feed: "api",
-  base: "base",
-};
+function getStatusCopy(status: OfficialMatch["status"]) {
+  if (status === "finished") return "encerrado";
+  if (status === "live") return "ao vivo";
+  return "agendado";
+}
 
-export function MatchHub({ matches, conflictCount, onOpenMatch }: MatchHubProps) {
+export function MatchHub({ matches, onOpenMatch }: MatchHubProps) {
   const featured = matches.slice(0, 8);
-  const manualCount = matches.filter((match) => match.source === "manual").length;
+  const finishedCount = matches.filter((match) => match.status === "finished").length;
+  const liveCount = matches.filter((match) => match.status === "live").length;
 
   return (
     <section className="match-hub" id="partidas">
       <div className="match-hub-header">
         <div>
-          <p className="eyebrow">Fluxo rápido</p>
+          <p className="eyebrow">Fluxo oficial</p>
           <h2>Partidas em destaque</h2>
           <p className="muted-copy">
-            No celular, comece por aqui: abra um jogo, ajuste placar e volte para a chave
-            completa quando precisar do panorama.
+            Abra qualquer jogo para ver placar oficial, status e caminho da chave sem alterar o
+            torneio.
           </p>
-          <p className="match-hub-note">Entrada curta para quem quer editar antes de explorar a árvore toda.</p>
+          <p className="match-hub-note">Leitura rápida do estado oficial antes de explorar a árvore completa.</p>
         </div>
-        <div className="match-hub-metrics" aria-label="Resumo do workspace">
+        <div className="match-hub-metrics" aria-label="Resumo oficial">
           <div className="match-metric">
             <strong>{featured.length}</strong>
             <span>atalhos agora</span>
           </div>
           <div className="match-metric">
-            <strong>{manualCount}</strong>
-            <span>edições manuais</span>
+            <strong>{finishedCount}</strong>
+            <span>encerradas</span>
           </div>
           <div className="match-metric match-metric-warn">
-            <strong>{conflictCount}</strong>
-            <span>conflitos</span>
+            <strong>{liveCount}</strong>
+            <span>ao vivo</span>
           </div>
         </div>
       </div>
@@ -59,7 +49,7 @@ export function MatchHub({ matches, conflictCount, onOpenMatch }: MatchHubProps)
           <article className="match-quick-card" key={match.id} role="listitem">
             <div className="match-quick-meta">
               <span>{match.stage}</span>
-              <span>{match.kickoff}</span>
+              <span>{match.kickoffLabel}</span>
             </div>
             <div className="match-quick-score" aria-label={`Placar atual ${match.id}`}>
               <strong>{match.homeScore ?? "-"}</strong>
@@ -70,8 +60,8 @@ export function MatchHub({ matches, conflictCount, onOpenMatch }: MatchHubProps)
               {match.homeTeam} x {match.awayTeam}
             </h3>
             <div className="match-quick-status">
-              <span className={`status-pill status-${match.source}`}>{sourceCopy[match.source]}</span>
-              {match.hasConflict ? <span className="status-pill status-conflict">conflito</span> : null}
+              <span className="status-pill status-official">oficial</span>
+              <span className={`status-pill status-${match.status}`}>{getStatusCopy(match.status)}</span>
             </div>
             <button
               className="primary-button quick-open-button"

@@ -1,42 +1,63 @@
-import type { TeamDefinition } from "../lib/types";
+import type { OfficialGroup } from "../lib/feed/schema";
 
 type GroupCardsProps = {
-  teams: TeamDefinition[];
+  groups: OfficialGroup[];
 };
 
 const topGroups = ["A", "B", "C", "D", "E", "F"];
 const bottomGroups = ["G", "H", "I", "J", "K", "L"];
 
-export function GroupCards({ teams }: GroupCardsProps) {
+export function GroupCards({ groups }: GroupCardsProps) {
+  const map = new Map(groups.map((group) => [group.group, group]));
+
   return (
     <>
       <div className="group-strip">
-        {topGroups.map((group) => (
-          <GroupCard key={group} group={group} teams={teams.filter((team) => team.group === group)} />
+        {topGroups.map((groupCode) => (
+          <GroupCard key={groupCode} group={map.get(groupCode)} />
         ))}
       </div>
       <div className="group-strip group-strip-bottom">
-        {bottomGroups.map((group) => (
-          <GroupCard key={group} group={group} teams={teams.filter((team) => team.group === group)} />
+        {bottomGroups.map((groupCode) => (
+          <GroupCard key={groupCode} group={map.get(groupCode)} />
         ))}
       </div>
     </>
   );
 }
 
-function GroupCard({ group, teams }: { group: string; teams: TeamDefinition[] }) {
+function GroupCard({ group }: { group: OfficialGroup | undefined }) {
+  if (!group) {
+    return null;
+  }
+
   return (
-    <section className={`group-card group-${group.toLowerCase()}`} data-group={group}>
+    <section className={`group-card group-${group.group.toLowerCase()}`} data-group={group.group}>
       <header className="group-card-header">
-        <p className="eyebrow">Grupo {group}</p>
-        <h3>Grupo {group}</h3>
-        <span className="group-card-count">{teams.length} seleções</span>
+        <p className="eyebrow">Grupo {group.group}</p>
+        <h3>Grupo {group.group}</h3>
+        <span className="group-card-count">{group.teams.length} seleções</span>
       </header>
+
+      <div className="group-standings-head" aria-hidden="true">
+        <span>Pos</span>
+        <span>Seleção</span>
+        <span>P</span>
+        <span>J</span>
+        <span>SG</span>
+      </div>
+
       <ul className="group-team-list">
-        {teams.map((team) => (
-          <li key={team.code}>
-            <span className="group-team-seed">{team.code}</span>
-            <span>{team.name}</span>
+        {group.teams.map((team) => (
+          <li key={team.code} className={`group-team-status-${team.status}`}>
+            <span className="group-team-seed">{team.rank}</span>
+            <span className="group-team-name">
+              <strong>{team.code}</strong>
+              <small>{team.name}</small>
+            </span>
+            <span>{team.points}</span>
+            <span>{team.played}</span>
+            <span>{team.goalDifference >= 0 ? `+${team.goalDifference}` : team.goalDifference}</span>
           </li>
         ))}
       </ul>

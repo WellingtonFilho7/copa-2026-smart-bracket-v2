@@ -1,6 +1,6 @@
-import type { FeedMatch } from "../workspace/schema";
+import type { OfficialFeedPayload } from "./schema";
 
-export async function fetchFeedMatches(): Promise<FeedMatch[]> {
+export async function fetchOfficialFeed(): Promise<OfficialFeedPayload> {
   const response = await fetch("/api/worldcup-feed", {
     headers: {
       Accept: "application/json",
@@ -11,6 +11,5 @@ export async function fetchFeedMatches(): Promise<FeedMatch[]> {
     throw new Error(`Feed request failed with status ${response.status}`);
   }
 
-  const payload = (await response.json()) as { matches?: FeedMatch[] };
-  return payload.matches ?? [];
+  return (await response.json()) as OfficialFeedPayload;
 }

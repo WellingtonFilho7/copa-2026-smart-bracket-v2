@@ -1,25 +1,13 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import type { KeyboardEvent as ReactKeyboardEvent } from "react";
 
-import type { KnockoutStageCard } from "../App";
+import type { OfficialBracket, OfficialMatch } from "../lib/feed/schema";
 
 type BracketHomeProps = {
-  matches: Record<string, KnockoutStageCard>;
-  conflictCountByMatch: Record<string, number>;
+  matches: Record<string, OfficialMatch>;
+  bracket: OfficialBracket;
   onOpenMatch: (matchId: string) => void;
 };
-
-const columns = [
-  { title: "32 avos", ids: ["K1", "K2", "K3", "K4", "K5", "K6", "K7", "K8"] },
-  { title: "Oitavas", ids: ["O1", "O2", "O3", "O4"] },
-  { title: "Quartas", ids: ["Q1", "Q2"] },
-  { title: "Semifinal", ids: ["S1"] },
-  { title: "Final", ids: ["F", "T"] },
-  { title: "Semifinal", ids: ["S2"] },
-  { title: "Quartas", ids: ["Q3", "Q4"] },
-  { title: "Oitavas", ids: ["O5", "O6", "O7", "O8"] },
-  { title: "32 avos", ids: ["K9", "K10", "K11", "K12", "K13", "K14", "K15", "K16"] },
-];
 
 const phaseGroups = [
   {
@@ -28,7 +16,6 @@ const phaseGroups = [
     panelTitle: "32 avos de final",
     description: "Entrada principal da fase mata-mata, sem rolagem lateral obrigatória.",
     travelNote: "Vencedores avançam para as oitavas.",
-    ids: ["K1", "K2", "K3", "K4", "K5", "K6", "K7", "K8", "K9", "K10", "K11", "K12", "K13", "K14", "K15", "K16"],
   },
   {
     id: "round16",
@@ -36,7 +23,6 @@ const phaseGroups = [
     panelTitle: "Oitavas de final",
     description: "Os classificados se reorganizam em oito confrontos decisivos.",
     travelNote: "Vencedores avançam para as quartas.",
-    ids: ["O1", "O2", "O3", "O4", "O5", "O6", "O7", "O8"],
   },
   {
     id: "quarters",
@@ -44,7 +30,6 @@ const phaseGroups = [
     panelTitle: "Quartas de final",
     description: "Quatro jogos concentram o caminho até as semifinais.",
     travelNote: "Vencedores avançam para as semifinais.",
-    ids: ["Q1", "Q2", "Q3", "Q4"],
   },
   {
     id: "semis",
@@ -52,7 +37,6 @@ const phaseGroups = [
     panelTitle: "Semifinais",
     description: "Aqui o torneio se divide entre decisão do título e disputa de 3º lugar.",
     travelNote: "Vencedores vão para a final; derrotados disputam o 3º lugar.",
-    ids: ["S1", "S2"],
   },
   {
     id: "finals",
@@ -60,31 +44,33 @@ const phaseGroups = [
     panelTitle: "Final e 3º lugar",
     description: "Os dois últimos jogos fecham o pôster do torneio.",
     travelNote: "Final decide o título; T define o 3º lugar.",
-    ids: ["F", "T"],
   },
-];
+] as const;
 
-export function BracketHome({
-  matches,
-  conflictCountByMatch,
-  onOpenMatch,
-}: BracketHomeProps) {
-  const [activePhaseId, setActivePhaseId] = useState(phaseGroups[0].id);
+const fullColumns = [
+  { title: "32 avos", roundKey: "round32", ids: (bracket: OfficialBracket) => bracket.round32.slice(0, 8) },
+  { title: "Oitavas", roundKey: "round16", ids: (bracket: OfficialBracket) => bracket.round16.slice(0, 4) },
+  { title: "Quartas", roundKey: "quarters", ids: (bracket: OfficialBracket) => bracket.quarters.slice(0, 2) },
+  { title: "Semifinal", roundKey: "semis", ids: (bracket: OfficialBracket) => bracket.semis.slice(0, 1) },
+  { title: "Final", roundKey: "finals", ids: (bracket: OfficialBracket) => bracket.finals },
+  { title: "Semifinal", roundKey: "semis", ids: (bracket: OfficialBracket) => bracket.semis.slice(1) },
+  { title: "Quartas", roundKey: "quarters", ids: (bracket: OfficialBracket) => bracket.quarters.slice(2) },
+  { title: "Oitavas", roundKey: "round16", ids: (bracket: OfficialBracket) => bracket.round16.slice(4) },
+  { title: "32 avos", roundKey: "round32", ids: (bracket: OfficialBracket) => bracket.round32.slice(8) },
+] as const;
+
+function getStatusCopy(status: OfficialMatch["status"]) {
+  if (status === "finished") return "encerrado";
+  if (status === "live") return "ao vivo";
+  return "agendado";
+}
+
+export function BracketHome({ matches, bracket, onOpenMatch }: BracketHomeProps) {
+  const [activePhaseId, setActivePhaseId] = useState<(typeof phaseGroups)[number]["id"]>("round32");
   const [showFullBracket, setShowFullBracket] = useState(false);
 
-  const sourceCopy: Record<KnockoutStageCard["source"], string> = {
-    manual: "manual",
-    feed: "api",
-    base: "base",
-  };
-
-  const activePhase = useMemo(
-    () => phaseGroups.find((phase) => phase.id === activePhaseId) ?? phaseGroups[0],
-    [activePhaseId],
-  );
-  const activeCards = activePhase.ids
-    .map((id) => matches[id])
-    .filter((match): match is KnockoutStageCard => Boolean(match));
+  const activePhase = phaseGroups.find((phase) => phase.id === activePhaseId) ?? phaseGroups[0];
+  const activeCards = bracket[activePhase.id].map((id) => matches[id]).filter(Boolean);
 
   function focusPhaseTab(phaseId: string) {
     document.getElementById(`bracket-tab-${phaseId}`)?.focus();
@@ -130,7 +116,7 @@ export function BracketHome({
     <section className="bracket-shell">
       <div className="bracket-header">
         <p className="eyebrow bracket-kicker">Fase eliminatória</p>
-        <h2>Chaveamento da Copa do Mundo 2026</h2>
+        <h2>Chaveamento oficial da Copa do Mundo 2026</h2>
         <p className="bracket-lead">
           Navegue por fase sem rolar para os lados e abra a árvore inteira só quando precisar.
         </p>
@@ -170,7 +156,7 @@ export function BracketHome({
                   onKeyDown={handlePhaseKeyDown}
                 >
                   <span>{phase.label}</span>
-                  <small>{phase.ids.length} jogos</small>
+                  <small>{bracket[phase.id].length} jogos</small>
                 </button>
               );
             })}
@@ -192,12 +178,12 @@ export function BracketHome({
               className={`bracket-stage-list bracket-stage-list-${activePhase.id}`}
               style={{ alignItems: "start" }}
             >
-              {activeCards.map((match) => {
-                const isPlayed = hasMatchAlreadyHappened(match);
-                return (
+              {activeCards.map((match) => (
                 <button
                   key={match.id}
-                  className={`match-card bracket-stage-card${isPlayed ? " match-card-played" : ""}`}
+                  className={`match-card bracket-stage-card${
+                    match.status === "finished" ? " match-card-played" : ""
+                  }`}
                   type="button"
                   aria-label={`Abrir partida ${match.id}`}
                   style={{ minHeight: 0 }}
@@ -205,7 +191,7 @@ export function BracketHome({
                 >
                   <div className="match-card-meta">
                     <span className="match-card-id">{match.id}</span>
-                    <span className="match-card-time">{match.kickoff}</span>
+                    <span className="match-card-time">{match.kickoffLabel}</span>
                   </div>
                   <div className="match-card-body">
                     <span className="team-line">{match.homeTeam}</span>
@@ -217,47 +203,38 @@ export function BracketHome({
                     <strong className="match-card-score-value">{match.awayScore ?? "-"}</strong>
                   </div>
                   <div className="match-card-foot">
-                    <span className={`match-card-source match-card-source-${match.source}`}>
-                      {sourceCopy[match.source]}
-                    </span>
-                    {(conflictCountByMatch[match.id] ?? 0) > 0 ? (
-                      <span className="conflict-badge">{conflictCountByMatch[match.id]} conflito</span>
-                    ) : isPlayed ? (
-                      <span className="match-card-state">jogo ocorrido</span>
-                    ) : null}
+                    <span className="match-card-source match-card-source-official">oficial</span>
+                    <span className="match-card-state">{getStatusCopy(match.status)}</span>
                   </div>
                   <p className="bracket-stage-travel">{getTravelLabel(match.id)}</p>
                 </button>
-                );
-              })}
+              ))}
             </div>
           </section>
         </>
       ) : (
         <div className="bracket-scroll" aria-label="Tabela horizontal do chaveamento">
           <div className="bracket-grid">
-            {columns.map((column) => (
-              <div className="bracket-column" key={`${column.title}-${column.ids[0]}`}>
+            {fullColumns.map((column) => (
+              <div className="bracket-column" key={`${column.title}-${column.ids(bracket)[0] ?? column.title}`}>
                 <h3>{column.title}</h3>
-                {column.ids.map((id) => {
+                {column.ids(bracket).map((id) => {
                   const match = matches[id];
                   if (!match) {
                     return null;
                   }
 
-                  const conflictCount = conflictCountByMatch[id] ?? 0;
-                  const isPlayed = hasMatchAlreadyHappened(match);
                   return (
                     <button
                       key={id}
-                      className={`match-card${isPlayed ? " match-card-played" : ""}`}
+                      className={`match-card${match.status === "finished" ? " match-card-played" : ""}`}
                       type="button"
                       aria-label={`Abrir partida ${id}`}
                       onClick={() => onOpenMatch(id)}
                     >
                       <div className="match-card-meta">
                         <span className="match-card-id">{id}</span>
-                        <span className="match-card-time">{match.kickoff}</span>
+                        <span className="match-card-time">{match.kickoffLabel}</span>
                       </div>
                       <div className="match-card-body">
                         <span className="team-line">{match.homeTeam}</span>
@@ -269,14 +246,8 @@ export function BracketHome({
                         <strong className="match-card-score-value">{match.awayScore ?? "-"}</strong>
                       </div>
                       <div className="match-card-foot">
-                        <span className={`match-card-source match-card-source-${match.source}`}>
-                          {sourceCopy[match.source]}
-                        </span>
-                        {conflictCount > 0 ? (
-                          <span className="conflict-badge">{conflictCount} conflito</span>
-                        ) : isPlayed ? (
-                          <span className="match-card-state">jogo ocorrido</span>
-                        ) : null}
+                        <span className="match-card-source match-card-source-official">oficial</span>
+                        <span className="match-card-state">{getStatusCopy(match.status)}</span>
                       </div>
                     </button>
                   );
@@ -297,32 +268,4 @@ function getTravelLabel(matchId: string) {
   if (matchId === "S1" || matchId === "S2") return "Define final e 3º lugar";
   if (matchId === "F") return "Decide o título";
   return "Decide o 3º lugar";
-}
-
-function hasMatchAlreadyHappened(match: KnockoutStageCard) {
-  if (match.homeScore !== null || match.awayScore !== null) {
-    return true;
-  }
-
-  const kickoff = parseKickoffLabel(match.kickoff);
-  if (!kickoff) {
-    return false;
-  }
-
-  return kickoff.getTime() <= Date.now();
-}
-
-function parseKickoffLabel(label: string) {
-  const [datePart, timePart] = label.split("•").map((part) => part.trim());
-  if (!datePart || !timePart) {
-    return null;
-  }
-
-  const [day, month] = datePart.split("/").map(Number);
-  const [hour, minute] = timePart.replace("h", ":").split(":").map(Number);
-  if ([day, month, hour, minute].some((value) => Number.isNaN(value))) {
-    return null;
-  }
-
-  return new Date(2026, month - 1, day, hour, minute);
 }
