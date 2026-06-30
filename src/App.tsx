@@ -71,8 +71,8 @@ export default function App() {
             <span>Official Bracket</span>
           </h1>
           <p className="hero-lead">
-            Acompanhe a chave e os grupos com uma única fonte oficial normalizada, sem edição
-            manual e sem dados locais competindo com o placar real.
+            Acompanhe a chave e os grupos com o calendário oficial da FIFA normalizado no backend,
+            sem edição manual e sem placares locais competindo com o torneio real.
           </p>
           <div className="hero-stats" aria-label="Resumo da home">
             <div className="hero-stat">
@@ -117,7 +117,7 @@ export default function App() {
             <p className="section-note">
               {syncState === "error"
                 ? "A fonte oficial não respondeu. Tente atualizar novamente."
-                : "Buscando o snapshot oficial do torneio."}
+                : "Buscando o feed oficial ao vivo do torneio."}
             </p>
           </div>
         </section>
@@ -132,7 +132,7 @@ export default function App() {
                 <h2>Classificação dos grupos</h2>
               </div>
               <p className="section-note">
-                Doze grupos ordenados por pontos, jogos e saldo, sem ranking inventado no cliente.
+                Doze grupos recalculados a partir dos resultados oficiais da FIFA, sem edição local.
               </p>
             </div>
             <GroupCards groups={data.groups} />

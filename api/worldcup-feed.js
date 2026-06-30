@@ -1,11 +1,11 @@
-import snapshot from "../data/official-feed.snapshot.json" with { type: "json" };
+import { getOfficialFeedOrFallback } from "./official-feed.js";
 
-export default function handler(_request, response) {
-  response.status(200).json({
-    ...snapshot,
-    meta: {
-      ...snapshot.meta,
-      syncedAt: new Date().toISOString(),
-    },
-  });
+export default async function handler(_request, response) {
+  const payload = await getOfficialFeedOrFallback();
+
+  if (typeof response.setHeader === "function") {
+    response.setHeader("Cache-Control", "s-maxage=300, stale-while-revalidate=900");
+  }
+
+  response.status(200).json(payload);
 }

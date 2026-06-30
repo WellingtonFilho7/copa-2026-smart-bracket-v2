@@ -13,7 +13,7 @@ describe("App shell", () => {
     expect(
       screen.getByRole("heading", { name: /copa 2026 official bracket/i }),
     ).toBeInTheDocument();
-    expect(screen.getByText(/fonte oficial normalizada/i)).toBeInTheDocument();
+    expect(screen.getByText(/calendário oficial da fifa normalizado no backend/i)).toBeInTheDocument();
 
     await waitFor(() => {
       expect(screen.getByRole("heading", { name: /partidas em destaque/i })).toBeInTheDocument();

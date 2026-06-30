@@ -20,8 +20,8 @@ export function WorkspaceToolbar({
       <div className="toolbar-copy">
         <p className="eyebrow">Fonte oficial</p>
         <p className="toolbar-lead">
-          O app usa um snapshot oficial normalizado do torneio. Sem edição manual, sem importação
-          de placares e sem conflito editorial.
+          O app usa o calendário oficial da FIFA como fonte principal. Sem edição manual, sem
+          importação de placares e sem conflito editorial.
         </p>
         <p className="toolbar-sync" aria-label="Última sincronização">
           <span className="toolbar-sync-dot" aria-hidden="true" />
@@ -32,7 +32,7 @@ export function WorkspaceToolbar({
           Fonte oficial: {upstreamLabel}
         </p>
         {isStale ? (
-          <p className="toolbar-error">Mostrando o último snapshot salvo até a API voltar.</p>
+          <p className="toolbar-error">Mostrando o último feed salvo até a API oficial voltar.</p>
         ) : null}
         {syncState === "error" ? (
           <p className="toolbar-error" role="alert">
